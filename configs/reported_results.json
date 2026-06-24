@@ -1,0 +1,56 @@
+{
+  "stage1_baseline": {
+    "rougeL": 0.4743,
+    "meteor": 0.4810,
+    "bleu4": 0.1247,
+    "bertscore_f1": 0.4253
+  },
+  "stage2_main_prompt_double": {
+    "rougeL": 0.2495,
+    "meteor": 0.1988,
+    "bleu4": 0.0525,
+    "bertscore_f1": 0.3018,
+    "diagnosis_exact": 0.1667,
+    "diagnosis_relaxed": 0.3333,
+    "certainty_exact": 0.9000,
+    "source_internal_run": "histai_ft_5x512_from_5x512_all_baseline_prompt_double"
+  },
+  "stage2_wsi_marker_ablation": {
+    "baseline": {
+      "rougeL": 0.2168,
+      "meteor": 0.1772,
+      "bleu4": 0.0383,
+      "bertscore_f1": 0.2711,
+      "diagnosis_relaxed": 0.3000,
+      "certainty": 0.9000,
+      "source_internal_run": "histai_ft_5x512_from_5x512_all_baseline"
+    },
+    "unique_marker_per_wsi": {
+      "rougeL": 0.2292,
+      "meteor": 0.1912,
+      "bleu4": 0.0312,
+      "bertscore_f1": 0.2934,
+      "diagnosis_relaxed": 0.3000,
+      "certainty": 0.9000,
+      "source_internal_run": "histai_ft_5x512_from_5x512_all_baseline_wsi_markers"
+    },
+    "shared_marker": {
+      "rougeL": 0.2625,
+      "meteor": 0.2232,
+      "bleu4": 0.0676,
+      "bertscore_f1": 0.3081,
+      "diagnosis_relaxed": 0.3000,
+      "certainty": 0.9333,
+      "source_internal_run": "histai_ft_5x512_from_5x512_all_baseline_use_markers_no_index"
+    },
+    "vision_token_dropout_0_2": {
+      "rougeL": 0.2275,
+      "meteor": 0.1910,
+      "bleu4": 0.0373,
+      "bertscore_f1": 0.3036,
+      "diagnosis_relaxed": 0.2667,
+      "certainty": 0.9000,
+      "source_internal_run": "histai_ft_5x512_from_5x512_all_baseline_dropout_02"
+    }
+  }
+}

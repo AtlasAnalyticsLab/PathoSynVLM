@@ -1,0 +1,25 @@
+{
+  "description": "Paper Stage 1 baseline: aligner-only training on HistGen + REG2025 with CONCHv1.5 5x_512 embeddings.",
+  "script": "scripts/train_stage1_alignment.py",
+  "args": {
+    "metadata_json": "data/stage1/merged_metadata_3datasets_filtered_conch_v15.json",
+    "dataset_embeddings_root": "data/embeddings",
+    "feature_key": "conch_v15",
+    "patch_level": "5x_512",
+    "datasets": "histgen,reg_dataset",
+    "prompt_style": "single",
+    "llm": "Qwen/Qwen2.5-3B-Instruct",
+    "vision_dim": 768,
+    "epochs": 10,
+    "batch_size": 1,
+    "grad_accum": 8,
+    "aligner_lr": 0.0001,
+    "weight_decay": 0.01,
+    "warmup_ratio": 0.03,
+    "scheduler": "cosine",
+    "precision": "bf16",
+    "val_size": "500",
+    "split_seed": 42,
+    "gen_max_new_tokens": 256
+  }
+}

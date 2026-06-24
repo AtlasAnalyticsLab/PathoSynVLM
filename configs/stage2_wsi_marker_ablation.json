@@ -1,0 +1,55 @@
+{
+  "description": "Stage 2 WSI marker ablation settings reported in the paper.",
+  "audit_note": "The internal run configs showed use_wsi_markers=true for the run mapped to the paper baseline/no-marker row. The values below preserve observed internal run arguments; see audit/internal_repo_audit.md before re-running this ablation.",
+  "common_args": {
+    "metadata_standardized_json": "data/histai/standardized_metadata_fixed_filtered_5x_512.json",
+    "dataset_embeddings_root": "data/embeddings",
+    "feature_key": "conch_v15",
+    "patch_level": "5x_512",
+    "val_size": "0.2",
+    "split_seed": 42,
+    "max_text_length": 512,
+    "max_vision_tokens": 4096,
+    "prompt_style": "single",
+    "aligner_init": "runs/stage1_alignment/best_aligner_weights.pt",
+    "epochs": 20,
+    "batch_size": 1,
+    "grad_accum": 8,
+    "lr": 0.00002,
+    "aligner_lr": 0.0001,
+    "gradient_checkpoint": true,
+    "precision": "bf16",
+    "use_lora": true,
+    "unfreeze_llm_base": true,
+    "val_max_batches": 30,
+    "gen_max_new_tokens": 256
+  },
+  "runs": {
+    "baseline": {
+      "paper_label": "No WSI marker token / baseline",
+      "source_internal_run": "histai_ft_5x512_from_5x512_all_baseline",
+      "use_wsi_markers": true,
+      "use_wsi_index_emb": true
+    },
+    "unique_marker_per_wsi": {
+      "paper_label": "Unique marker per WSI",
+      "source_internal_run": "histai_ft_5x512_from_5x512_all_baseline_wsi_markers",
+      "use_wsi_markers": true,
+      "use_wsi_index_emb": true
+    },
+    "shared_marker": {
+      "paper_label": "Shared marker",
+      "source_internal_run": "histai_ft_5x512_from_5x512_all_baseline_use_markers_no_index",
+      "use_wsi_markers": true,
+      "use_wsi_index_emb": false
+    },
+    "vision_token_dropout_0_2": {
+      "paper_label": "Vision token dropout 0.2",
+      "source_internal_run": "histai_ft_5x512_from_5x512_all_baseline_dropout_02",
+      "use_wsi_markers": true,
+      "use_wsi_index_emb": true,
+      "vision_token_dropout": 0.2,
+      "max_text_length": 384
+    }
+  }
+}

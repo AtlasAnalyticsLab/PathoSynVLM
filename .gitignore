@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environments
+.venv/
+venv/
+env/
+
+# Local data and outputs
+data/raw/
+data/embeddings/
+data/stage1/*.json
+data/histai/*.json
+data/histai/*.txt
+runs/
+wandb/
+logs/
+
+# Weights are released outside Git.
+weights/*
+!weights/README.md
+
+# Large model/data files
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.h5
+*.hdf5
+*.svs
+*.tif
+*.tiff
+*.ndpi
+*.mrxs

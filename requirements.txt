@@ -1,0 +1,14 @@
+torch
+transformers
+peft
+accelerate
+tqdm
+numpy
+h5py
+evaluate
+rouge-score
+sacrebleu
+nltk
+bert-score
+wandb
+matplotlib
