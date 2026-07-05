@@ -4,12 +4,12 @@ PathoSynVLM has code in Git and model artifacts outside Git.
 
 The intended user experience is:
 
-1. The authors export the trained Stage 2 model once.
-2. The authors upload that exported directory to Hugging Face, GitHub Releases, institutional storage, or another artifact host.
+1. The trained Stage 2 model is exported once into the inference layout below.
+2. The exported directory is hosted through Hugging Face, GitHub Releases, institutional storage, or another artifact host.
 3. Users download the exported directory into `weights/pathosynvlm-stage2-main/`.
 4. Users run inference or evaluation directly from those weights.
 
-Users should **not** need to train the model just to generate a report, as long as the author-uploaded weights are available.
+Users should **not** need to train the model just to generate a report, as long as the released weights are available.
 
 ## What Users Download
 
@@ -26,16 +26,17 @@ weights/pathosynvlm-stage2-main/
 
 `llm/` is a merged Hugging Face model directory for the paper release. This matters because the paper run used `unfreeze_llm_base=true`; a LoRA adapter alone is not sufficient for exact reruns unless the base updates are also included.
 
-After the final Hugging Face repo id is known, the README command should be updated, for example:
+After the final Hugging Face repo id is known, download the weights with:
 
 ```bash
-hf download <ORG_OR_USER>/pathosynvlm-stage2-main \
+export PATHOSYNVLM_HF_REPO=AtlasAnalyticsLab/pathosynvlm-stage2-main
+hf download "$PATHOSYNVLM_HF_REPO" \
   --local-dir weights/pathosynvlm-stage2-main
 ```
 
 If the release is hosted somewhere other than Hugging Face, download and unpack it so that `weights/pathosynvlm-stage2-main/config.json` exists.
 
-The prepared Hugging Face upload root is the model repository itself: it contains the real `llm/model.safetensors` and `vlm_state.pt` files, not symlinks or placeholder pointers. See [docs/huggingface_release.md](huggingface_release.md) for the exact upload-root validation steps.
+The prepared Hugging Face upload root is the model repository itself: it contains the real `llm/model.safetensors` and `vlm_state.pt` files, not symlinks or pointer files. See [docs/huggingface_release.md](huggingface_release.md) for the exact upload-root validation steps.
 
 ## What `export_release_weights.py` Does
 
@@ -48,9 +49,9 @@ Use it when:
 
 Do not use it when:
 
-- You only want to run the pretrained model. In that case, download the uploaded package instead.
+- You only want to run the pretrained model. In that case, download the released package instead.
 
-Export command for the authors:
+Export command for retraining or packaging a new checkpoint:
 
 ```bash
 python scripts/export_release_weights.py \

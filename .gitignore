@@ -19,7 +19,9 @@ data/histai/*.json
 data/histai/*.txt
 runs/
 wandb/
-logs/
+*.log
+slurm-*.out
+slurm-*.err
 
 # Weights are released outside Git.
 weights/*

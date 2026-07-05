@@ -54,7 +54,7 @@ class VisionAligner(nn.Module):
         return x
 
 
-class VLM_MVP(nn.Module):
+class PathoSynVLM(nn.Module):
     """
     Minimal VLM = [VisionAligner] + [CausalLM]
 
@@ -342,19 +342,22 @@ class VLM_MVP(nn.Module):
         if eos_token_id is None:
             eos_token_id = getattr(self.llm.config, "eos_token_id", None)
 
-        generated = self.llm.generate(
-            inputs_embeds=packed["inputs_embeds"],
-            attention_mask=packed["attention_mask"],
-            max_new_tokens=max_new_tokens,
-            min_new_tokens=min_new_tokens,
-            do_sample=do_sample,
-            temperature=temperature,
-            top_p=top_p,
-            num_beams=num_beams,
-            pad_token_id=pad_token_id,
-            eos_token_id=eos_token_id,
+        generate_kwargs: dict[str, Any] = {
+            "inputs_embeds": packed["inputs_embeds"],
+            "attention_mask": packed["attention_mask"],
+            "max_new_tokens": max_new_tokens,
+            "min_new_tokens": min_new_tokens,
+            "do_sample": do_sample,
+            "num_beams": num_beams,
+            "pad_token_id": pad_token_id,
+            "eos_token_id": eos_token_id,
             **gen_kwargs,
-        )
+        }
+        if bool(do_sample):
+            generate_kwargs["temperature"] = temperature
+            generate_kwargs["top_p"] = top_p
+
+        generated = self.llm.generate(**generate_kwargs)
         return generated
 
 
@@ -410,7 +413,7 @@ def resolve_aligner_checkpoint_path(path_like: str | Path) -> Path:
 
 
 def load_aligner_from_checkpoint(
-    model: VLM_MVP,
+    model: PathoSynVLM,
     checkpoint_path: str | Path,
     *,
     strict: bool = True,

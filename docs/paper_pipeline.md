@@ -7,10 +7,11 @@ This document maps paper claims to commands and configs.
 ```bash
 conda create -n pathosynvlm python=3.11 -y
 conda activate pathosynvlm
+export PYTHONNOUSERSITE=1
 pip install -e .
 ```
 
-On clusters, run the commands inside an allocated compute session.
+On clusters, run the commands inside an allocated compute session. Keeping `PYTHONNOUSERSITE=1` avoids accidentally importing packages from a pre-existing user site.
 
 ## Stage 1 Baseline
 
@@ -70,4 +71,4 @@ The training code logs sacreBLEU as a percentage, so `5.2512` in JSON correspond
 
 ## Ablations
 
-Paper ablation values are stored in [configs/reported_results.json](../configs/reported_results.json). The internal audit notes record which internal run names correspond to each row.
+Paper ablation values are stored in [configs/reported_results.json](../configs/reported_results.json). The corresponding command settings are summarized in [configs/stage2_wsi_marker_ablation.json](../configs/stage2_wsi_marker_ablation.json).

@@ -16,7 +16,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from pathosynvlm.histai_dataset import resolve_prompt_text, resolve_target_field_label
-from pathosynvlm.model import VLM_MVP
+from pathosynvlm.model import PathoSynVLM
 
 
 def _read_h5_features(path: Path, feature_key: str) -> np.ndarray:
@@ -42,13 +42,27 @@ def _load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def _load_release_model(weights_dir: Path, device: torch.device, dtype: torch.dtype | None) -> tuple[VLM_MVP, Any, dict[str, Any]]:
+def _as_input_ids(encoded: Any) -> torch.Tensor:
+    if torch.is_tensor(encoded):
+        input_ids = encoded
+    elif isinstance(encoded, dict) and torch.is_tensor(encoded.get("input_ids")):
+        input_ids = encoded["input_ids"]
+    elif hasattr(encoded, "input_ids") and torch.is_tensor(encoded.input_ids):
+        input_ids = encoded.input_ids
+    else:
+        raise TypeError(f"Could not extract input_ids from tokenizer output of type {type(encoded)!r}")
+    if input_ids.ndim == 1:
+        input_ids = input_ids.unsqueeze(0)
+    return input_ids
+
+
+def _load_release_model(weights_dir: Path, device: torch.device, dtype: torch.dtype | None) -> tuple[PathoSynVLM, Any, dict[str, Any]]:
     cfg = _load_json(weights_dir / "config.json")
     llm_path = weights_dir / str(cfg.get("llm_path", "llm"))
     if not llm_path.exists():
         llm_path = Path(str(cfg.get("base_llm", "Qwen/Qwen2.5-3B-Instruct")))
 
-    model = VLM_MVP(
+    model = PathoSynVLM(
         llm_name_or_path=str(llm_path),
         vision_dim=int(cfg.get("vision_dim", 768)),
         feature_key=str(cfg.get("feature_key", "conch_v15")),
@@ -161,12 +175,22 @@ def main() -> None:
             + markers,
         },
     ]
-    prompt_ids = tokenizer.apply_chat_template(
-        messages,
-        tokenize=True,
-        add_generation_prompt=True,
-        return_tensors="pt",
-    ).to(device)
+    try:
+        prompt_encoded = tokenizer.apply_chat_template(
+            messages,
+            tokenize=True,
+            add_generation_prompt=True,
+            return_tensors="pt",
+            return_dict=True,
+        )
+    except TypeError:
+        prompt_encoded = tokenizer.apply_chat_template(
+            messages,
+            tokenize=True,
+            add_generation_prompt=True,
+            return_tensors="pt",
+        )
+    prompt_ids = _as_input_ids(prompt_encoded).to(device)
     prompt_mask = torch.ones_like(prompt_ids, dtype=torch.long, device=device)
 
     with torch.no_grad():

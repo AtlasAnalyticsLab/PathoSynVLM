@@ -4,7 +4,7 @@ from typing import Any
 
 import torch
 
-from .model import VLM_MVP
+from .model import PathoSynVLM
 
 
 def build_alignment_model(
@@ -14,13 +14,13 @@ def build_alignment_model(
     feature_key: str = "conch_v15",
     torch_dtype: torch.dtype | None = None,
     attn_implementation: str | None = None,
-) -> VLM_MVP:
+) -> PathoSynVLM:
     """
     Build an alignment-only model:
     - uses precomputed vision embeddings
     - disables WSI markers for one-WSI caption training
     """
-    model = VLM_MVP(
+    model = PathoSynVLM(
         llm_name_or_path=llm_name_or_path,
         vision_dim=vision_dim,
         feature_key=feature_key,
@@ -31,7 +31,7 @@ def build_alignment_model(
     return model
 
 
-def freeze_for_alignment_only(model: VLM_MVP) -> dict[str, Any]:
+def freeze_for_alignment_only(model: PathoSynVLM) -> dict[str, Any]:
     """
     Freeze everything except the projection module (`aligner`).
 

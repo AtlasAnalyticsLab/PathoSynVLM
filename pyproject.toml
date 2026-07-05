@@ -10,18 +10,18 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "CC-BY-NC-SA-4.0" }
 dependencies = [
-  "torch",
-  "transformers",
-  "peft",
-  "accelerate",
-  "tqdm",
-  "numpy",
-  "h5py",
-  "evaluate",
-  "rouge-score",
-  "sacrebleu",
-  "nltk",
-  "bert-score",
+  "torch>=2.1",
+  "transformers>=4.45",
+  "peft>=0.12",
+  "accelerate>=0.30",
+  "tqdm>=4.66",
+  "numpy>=1.24",
+  "h5py>=3.10",
+  "evaluate>=0.4",
+  "rouge-score>=0.1.2",
+  "sacrebleu>=2.4",
+  "nltk>=3.8",
+  "bert-score>=0.3.13",
 ]
 
 [tool.setuptools.packages.find]

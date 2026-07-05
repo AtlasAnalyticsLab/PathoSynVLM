@@ -11,8 +11,6 @@ Use the paper default:
 - HistGen: https://github.com/dddavid4real/HistGen and https://huggingface.co/datasets/david4real/HistGen
 - REG2025: https://reg2025.grand-challenge.org/
 
-The internal research repo also contains PathText experiments. PathText is not part of the paper-default command.
-
 Expected raw metadata:
 
 ```text

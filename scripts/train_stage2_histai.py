@@ -37,7 +37,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from pathosynvlm.histai_dataset import create_train_val_dataloaders, normalize_target_field_name, resolve_target_field_label
 from pathosynvlm.metrics import summarize_field_accuracy
-from pathosynvlm.model import VLM_MVP, load_aligner_from_checkpoint
+from pathosynvlm.model import PathoSynVLM, load_aligner_from_checkpoint
 
 
 def set_seed(seed: int) -> None:
@@ -130,7 +130,7 @@ def _unfreeze_llm_norms(llm: torch.nn.Module) -> int:
     return trainable
 
 
-def _apply_llm_train_scope(model: VLM_MVP, *, scope: str, use_lora: bool) -> dict[str, Any]:
+def _apply_llm_train_scope(model: PathoSynVLM, *, scope: str, use_lora: bool) -> dict[str, Any]:
     llm = model.llm
     layers: list[torch.nn.Module] | None = None
     scope = str(scope).strip().lower()
@@ -187,7 +187,7 @@ def _apply_llm_train_scope(model: VLM_MVP, *, scope: str, use_lora: bool) -> dic
 class AnchorRegularizer:
     def __init__(
         self,
-        model: VLM_MVP,
+        model: PathoSynVLM,
         *,
         llm_weight: float,
         aligner_weight: float,
@@ -491,7 +491,7 @@ def log_epoch_loss_curve_to_wandb(
 def save_checkpoint(
     *,
     save_dir: Path,
-    model: VLM_MVP,
+    model: PathoSynVLM,
     optimizer: torch.optim.Optimizer,
     scheduler,
     step: int,
@@ -656,7 +656,7 @@ def _extract_prompt_and_refs(
 @torch.no_grad()
 def run_validation(
     *,
-    model: VLM_MVP,
+    model: PathoSynVLM,
     val_dl: DataLoader,
     device: torch.device,
     tokenizer,
@@ -936,7 +936,7 @@ def run_validation(
 
 
 def _param_groups(
-    model: VLM_MVP,
+    model: PathoSynVLM,
     *,
     lr_lora: float,
     lr_aligner: float,
@@ -1283,7 +1283,7 @@ def main() -> None:
         mixed_data_info: Dict[str, Any] | None = None
         if float(args.alignment_mix_fraction) > 0.0:
             raise ValueError(
-                "--alignment_mix_fraction is an internal follow-up experiment and is not part of "
+                "--alignment_mix_fraction is an experimental extension and is not part of "
                 "the paper-default path. Leave it at 0.0."
             )
         else:
@@ -1341,7 +1341,7 @@ def main() -> None:
 
         rprint("Building model...")
         model_t0 = time.perf_counter()
-        base_model = VLM_MVP(
+        base_model = PathoSynVLM(
             llm_name_or_path=args.llm,
             vision_dim=int(args.vision_dim),
             feature_key=str(args.feature_key),

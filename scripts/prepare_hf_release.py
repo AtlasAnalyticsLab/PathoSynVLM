@@ -9,11 +9,7 @@ from typing import Any
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SOURCE_RUN = (
-    Path("/home/chengj60/scratch/VLM_MVP/runs/histai_finetune-20260221")
-    / "histai_ft_5x512_from_5x512_all_baseline_prompt_double"
-)
-DEFAULT_OUTPUT_DIR = Path("/home/chengj60/scratch/PathoSynVLM_HF_release_review")
+DEFAULT_OUTPUT_DIR = Path("release/huggingface")
 
 
 def _load_json(path: Path) -> dict[str, Any]:
@@ -25,31 +21,6 @@ def _resolve_checkpoint_step(source_run_dir: Path, checkpoint_step: int) -> int:
         return int(checkpoint_step)
     summary = _load_json(source_run_dir / "best_checkpoint_summary.json")
     return int(summary["best_step"])
-
-
-def _safe_unlink(path: Path) -> None:
-    if path.is_symlink() or path.is_file():
-        path.unlink()
-    elif path.is_dir():
-        shutil.rmtree(path)
-
-
-def _source_artifact_reference(src: Path) -> dict[str, Any]:
-    exists = bool(src.exists())
-    if exists and src.is_dir():
-        kind = "directory"
-    elif exists and src.is_file():
-        kind = "file"
-    else:
-        kind = "missing"
-    return {
-        "name": src.name,
-        "source_path": str(src),
-        "exists": exists,
-        "kind": kind,
-        "size_bytes": int(src.stat().st_size) if exists and src.is_file() else None,
-        "role": "internal provenance reference only; not copied or symlinked into the Hub repo",
-    }
 
 
 def _copy_if_exists(src: Path, dst: Path) -> None:
@@ -174,6 +145,7 @@ def _model_card(
         cd PathoSynVLM
         conda create -n pathosynvlm python=3.11 -y
         conda activate pathosynvlm
+        export PYTHONNOUSERSITE=1
         pip install -e .
         ```
 
@@ -226,10 +198,9 @@ def _model_card(
 
         ### From Raw Whole-Slide Images
 
-        First extract tissue patches and CONCHv1.5 patch embeddings using
-        AtlasPatch or an equivalent WSI preprocessing pipeline. Write each slide
-        to the H5 layout above, then pass the resulting H5 files to
-        `scripts/generate_case_report.py`.
+        First extract tissue patches and CONCHv1.5 patch embeddings using a WSI
+        preprocessing pipeline that writes the H5 layout above. Then pass the
+        resulting H5 files to `scripts/generate_case_report.py`.
 
         ## Running The Paper Pipeline
 
@@ -238,6 +209,7 @@ def _model_card(
         ```bash
         git clone {github_url} PathoSynVLM
         cd PathoSynVLM
+        export PYTHONNOUSERSITE=1
         pip install -e .
 
         # 1. Download HistGen, REG2025, and HISTAI metadata/WSIs.
@@ -256,7 +228,6 @@ def _model_card(
 
         Checkpoint selected for release:
 
-        - source run: `histai_ft_5x512_from_5x512_all_baseline_prompt_double`
         - checkpoint step: `{checkpoint_step}`
         - checkpoint epoch: `{checkpoint_epoch}`
         - validation loss: `{val_loss:.6f}`
@@ -400,9 +371,9 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Prepare the Hugging Face model repo root and upload notes.")
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--hf-repo-dir", type=Path, default=None, help="Directory used as the actual HF model repo root.")
-    parser.add_argument("--repo-id", type=str, default="<ORG_OR_USER>/pathosynvlm-stage2-main")
-    parser.add_argument("--github-url", type=str, default="<GITHUB_REPO_URL>")
-    parser.add_argument("--source-run-dir", type=Path, default=DEFAULT_SOURCE_RUN)
+    parser.add_argument("--repo-id", type=str, required=True, help="Hugging Face model repo id, e.g. org/pathosynvlm-stage2-main.")
+    parser.add_argument("--github-url", type=str, required=True, help="Public GitHub repository URL.")
+    parser.add_argument("--source-run-dir", type=Path, required=True, help="Completed Stage 2 training run used for metadata refresh.")
     parser.add_argument("--checkpoint-step", type=int, default=-1)
     parser.add_argument("--overwrite", action="store_true")
     return parser.parse_args()
@@ -482,9 +453,6 @@ def main() -> None:
 
     required_weight_paths = ["config.json", "vlm_state.pt", "tokenizer", "llm", "best_checkpoint_summary.json"]
     missing = [p for p in required_weight_paths if not (hf_repo_dir / p).exists()]
-    stale_pending_file = hf_repo_dir / "WEIGHTS_PENDING.md"
-    if stale_pending_file.exists() or stale_pending_file.is_symlink():
-        stale_pending_file.unlink()
     if missing:
         missing_list = "\n".join(f"- {p}" for p in missing)
         raise SystemExit(
@@ -493,44 +461,17 @@ def main() -> None:
             "Run scripts/export_release_weights.py first, then rerun this script."
         )
 
-    stale_source_artifacts_dir = output_dir / "source_artifacts_do_not_upload"
-    if stale_source_artifacts_dir.exists() or stale_source_artifacts_dir.is_symlink():
-        _safe_unlink(stale_source_artifacts_dir)
-    source_items = [
-        _source_artifact_reference(source_run_dir / f"trainer_state_step_{checkpoint_step}.pt"),
-        _source_artifact_reference(source_run_dir / f"lora_step_{checkpoint_step}"),
-        _source_artifact_reference(source_run_dir / "train_args.json"),
-        _source_artifact_reference(source_run_dir / "best_checkpoint_summary.json"),
-    ]
-    source_reference_file = output_dir / "source_artifacts_reference.json"
-    source_reference_file.write_text(
-        json.dumps(
-            {
-                "source_run_dir": str(source_run_dir),
-                "checkpoint_step": int(checkpoint_step),
-                "artifacts": source_items,
-            },
-            indent=2,
-        )
-        + "\n",
-        encoding="utf-8",
-    )
-
     manifest = {
         "staging_version": 1,
         "repo_id": str(args.repo_id),
         "github_url": str(args.github_url),
         "hf_repo_dir": str(hf_repo_dir),
-        "source_run_dir": str(source_run_dir),
-        "source_run_name": source_run_dir.name,
         "checkpoint_step": int(checkpoint_step),
         "best_summary": best_summary,
         "train_args_subset": _effective_train_args_subset(train_args),
         "required_hf_files": required_weight_paths
         + ["README.md", "LICENSE", "model_index.json", "labels.json", ".gitattributes"],
         "missing_weight_entries": missing,
-        "source_artifact_reference_file": str(source_reference_file),
-        "source_artifact_references": source_items,
         "reported_results": reported_results,
     }
     (output_dir / "release_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
@@ -545,8 +486,9 @@ def main() -> None:
 
         ```bash
         cd {REPO_ROOT}
+        export PATHOSYNVLM_STAGE2_RUN=runs/stage2_main
         python scripts/export_release_weights.py \\
-          --run_dir {source_run_dir} \\
+          --run_dir "$PATHOSYNVLM_STAGE2_RUN" \\
           --output_dir {hf_repo_dir} \\
           --checkpoint_step {checkpoint_step} \\
           --overwrite
@@ -554,7 +496,8 @@ def main() -> None:
           --output-dir {output_dir} \\
           --hf-repo-dir {hf_repo_dir} \\
           --repo-id {args.repo_id} \\
-          --github-url {args.github_url}
+          --github-url {args.github_url} \\
+          --source-run-dir "$PATHOSYNVLM_STAGE2_RUN"
         ```
         """
     ).strip()
@@ -573,14 +516,6 @@ HF repo root:
 ```
 
 Weight status: `present`
-
-Internal source provenance is recorded in:
-
-```text
-{source_reference_file}
-```
-
-No source artifacts are copied or symlinked into the Hub repo root.
 
 {export_section}
 

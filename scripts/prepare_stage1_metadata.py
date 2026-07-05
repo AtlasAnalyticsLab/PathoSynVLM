@@ -160,7 +160,7 @@ def build_standardized_records(
         standardized.append(StandardizedRecord(source_dataset="histgen", id_filename=filename, report=report))
         stats["histgen"]["standardized_rows"] += 1
 
-    # PathText is retained as an optional compatibility path for internal ablations.
+    # PathText is retained as an optional compatibility path for non-default ablations.
     # The paper-default path uses HistGen + REG2025.
     if pathtext_json is not None:
         pathtext_data = _load_json(Path(pathtext_json))
@@ -236,7 +236,7 @@ def filter_records_by_embeddings(
     stats["pathtext"]["embedding_files"] = len(embedding_paths.get("pathtext", []))
     stats["reg_dataset"]["embedding_files"] = len(embedding_paths.get("reg_dataset", []))
 
-    filtered_internal: list[StandardizedRecord] = []
+    filtered_records: list[StandardizedRecord] = []
     for rec in records:
         src = rec.source_dataset
         stats[src]["input_rows"] += 1
@@ -251,7 +251,7 @@ def filter_records_by_embeddings(
             keep = rec_stem in reg_exact
 
         if keep:
-            filtered_internal.append(rec)
+            filtered_records.append(rec)
             stats[src]["kept"] += 1
         else:
             stats[src]["dropped_no_embedding"] += 1
@@ -259,7 +259,7 @@ def filter_records_by_embeddings(
     # Final output only two fields: id + report
     seen: set[tuple[str, str]] = set()
     filtered: list[dict[str, str]] = []
-    for rec in filtered_internal:
+    for rec in filtered_records:
         pair = (rec.id_filename, rec.report)
         if pair in seen:
             continue
@@ -267,9 +267,9 @@ def filter_records_by_embeddings(
         filtered.append({"id": rec.id_filename, "report": rec.report})
 
     stats["total_input_rows"] = len(records)
-    stats["total_filtered_rows_before_dedup"] = len(filtered_internal)
+    stats["total_filtered_rows_before_dedup"] = len(filtered_records)
     stats["total_filtered_rows"] = len(filtered)
-    stats["dedup_removed"] = len(filtered_internal) - len(filtered)
+    stats["dedup_removed"] = len(filtered_records) - len(filtered)
 
     return filtered, stats
 

@@ -14,7 +14,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from pathosynvlm.model import VLM_MVP
+from pathosynvlm.model import PathoSynVLM
 
 
 def _load_json(path: Path) -> dict[str, Any]:
@@ -109,7 +109,7 @@ def main() -> None:
     elif args.dtype == "fp16":
         dtype = torch.float16
 
-    model = VLM_MVP(
+    model = PathoSynVLM(
         llm_name_or_path=base_llm,
         vision_dim=int(train_args.get("vision_dim", 768)),
         feature_key=str(train_args.get("feature_key", "conch_v15")),
@@ -186,7 +186,6 @@ def main() -> None:
 
     release_config = {
         "format_version": 1,
-        "source_run_name": run_dir.name,
         "checkpoint_step": int(step),
         "base_llm": base_llm,
         "llm_kind": llm_kind,

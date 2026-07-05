@@ -18,7 +18,7 @@ from pathosynvlm.alignment_dataset import create_train_val_dataloaders as create
 from pathosynvlm.alignment_dataset import load_tokenizer
 from pathosynvlm.histai_dataset import create_train_val_dataloaders as create_histai_train_val_dataloaders
 from pathosynvlm.metrics import summarize_field_accuracy
-from pathosynvlm.model import VLM_MVP
+from pathosynvlm.model import PathoSynVLM
 
 
 def to_device(batch: dict[str, Any], device: torch.device) -> dict[str, Any]:
@@ -708,7 +708,7 @@ def main() -> None:
     import evaluate
 
     print("[info] building model and loading checkpoint...")
-    model = VLM_MVP(
+    model = PathoSynVLM(
         llm_name_or_path=(str(llm_dir) if not use_lora else llm),
         vision_dim=vision_dim,
         feature_key=feature_key,

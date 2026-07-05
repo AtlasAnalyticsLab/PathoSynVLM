@@ -615,7 +615,7 @@ def parse_args() -> argparse.Namespace:
         default="histgen,reg_dataset",
         help=(
             "Dataset selector: histgen,reg_dataset matches the paper default. "
-            "Other internal selectors are kept for compatibility: all | reg | histgen | pathtext | no_reg | no_histgen | no_pathtext "
+            "Other optional selectors are kept for compatibility: all | reg | histgen | pathtext | no_reg | no_histgen | no_pathtext "
             "(comma separated also supported, e.g. histgen,pathtext or all,no_reg)."
         ),
     )

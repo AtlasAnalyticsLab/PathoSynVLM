@@ -33,7 +33,7 @@ data/embeddings/
 
 ## Feature Extraction
 
-The paper used AtlasPatch for tissue detection, patch extraction, and CONCHv1.5 embedding generation. Any extractor is acceptable if it writes the H5 layout above with the same CONCHv1.5 feature dimension.
+Use a WSI preprocessing pipeline for tissue detection, patch extraction, and CONCHv1.5 embedding generation. Any extractor is acceptable if it writes the H5 layout above with the same CONCHv1.5 feature dimension.
 
 Recommended workflow:
 

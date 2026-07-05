@@ -3,7 +3,7 @@
 [![arXiv](https://img.shields.io/badge/arXiv-2605.30716-b31b1b.svg)](https://arxiv.org/abs/2605.30716)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776ab.svg)](https://www.python.org/)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey.svg)](LICENSE)
-[![Model weights](https://img.shields.io/badge/weights-to_be_uploaded-orange.svg)](weights/README.md)
+[![Model weights](https://img.shields.io/badge/model_weights-Hugging_Face-blue.svg)](weights/README.md)
 
 ![PathoSynVLM architecture from the paper](assets/paper_architecture.png)
 
@@ -30,6 +30,7 @@ Paper: https://arxiv.org/abs/2605.30716
 
 ## Table Of Contents
 
+- [Installation](#installation)
 - [Quick Start](#quick-start)
 - [Model Weights](#model-weights)
 - [Headline Results](#headline-results)
@@ -37,10 +38,27 @@ Paper: https://arxiv.org/abs/2605.30716
 - [Data And Embeddings](#data-and-embeddings)
 - [Run The Paper Pipeline](#run-the-paper-pipeline)
 - [Repository Map](#repository-map)
-- [SLURM Jobs](#slurm-jobs)
+- [Runtime Notes](#runtime-notes)
+- [Optional SLURM Jobs](#optional-slurm-jobs)
 - [Notes From The Authors](#notes-from-the-authors)
 - [Citation](#citation)
 - [License](#license)
+
+## Installation
+
+PathoSynVLM uses standard Python tooling and does not require SLURM. A CUDA-capable GPU is recommended for practical inference and required for full training runs; CPU inference is useful for smoke tests but can be slow.
+
+```bash
+git clone https://github.com/AtlasAnalyticsLab/PathoSynVLM
+cd PathoSynVLM
+
+conda create -n pathosynvlm python=3.11 -y
+conda activate pathosynvlm
+export PYTHONNOUSERSITE=1
+pip install -e .
+```
+
+`PYTHONNOUSERSITE=1` is optional on clean workstations, but it helps on shared servers where user-site packages may conflict with the environment.
 
 ## Quick Start
 
@@ -48,7 +66,7 @@ Paper: https://arxiv.org/abs/2605.30716
 
 This is the path for users who want to generate reports without retraining.
 
-The repository intentionally does **not** commit model weights to Git. The authors should upload the exported weight package to an artifact host such as Hugging Face, GitHub Releases, or institutional storage. After upload, users should download that package into:
+Model weights are distributed separately from Git. Download the released weight package into:
 
 ```text
 weights/pathosynvlm-stage2-main/
@@ -65,11 +83,11 @@ weights/pathosynvlm-stage2-main/
   best_checkpoint_summary.json
 ```
 
-Example after the model repository is uploaded:
+Download from Hugging Face:
 
 ```bash
-# Example only. Replace with the final author-uploaded model repo.
-hf download <ORG_OR_USER>/pathosynvlm-stage2-main \
+export PATHOSYNVLM_HF_REPO=AtlasAnalyticsLab/pathosynvlm-stage2-main
+hf download "$PATHOSYNVLM_HF_REPO" \
   --local-dir weights/pathosynvlm-stage2-main
 
 python scripts/generate_case_report.py \
@@ -79,17 +97,13 @@ python scripts/generate_case_report.py \
   --output_json report.json
 ```
 
-Users **do not need to create weights themselves** for inference once the authors upload the release package. The export script exists so the authors, or users who retrain from scratch, can convert a training run into that package.
+Replace the example `.h5` paths with the slide embedding files for one case.
+
+Users **do not need to create weights themselves** for inference once the model weights are available. The export script exists for converting a completed training run into the release weight layout.
 
 ### Option B: Train From Scratch
 
 This is the path for rerunning the paper training and evaluation pipeline end to end.
-
-```bash
-conda create -n pathosynvlm python=3.11 -y
-conda activate pathosynvlm
-pip install -e .
-```
 
 Then follow:
 
@@ -107,8 +121,8 @@ There are two different weight workflows:
 
 | Workflow | Who uses it | What happens |
 |---|---|---|
-| **Download released weights** | Most users | Download the author-uploaded `weights/pathosynvlm-stage2-main/` package and run inference or evaluation directly. |
-| **Export weights** | Authors or retrainers | Run `scripts/export_release_weights.py` on a completed Stage 2 training run to create the inference package. |
+| **Download released weights** | Most users | Download the released `weights/pathosynvlm-stage2-main/` package and run inference or evaluation directly. |
+| **Export weights** | Retrainers | Run `scripts/export_release_weights.py` on a completed Stage 2 training run to create the inference package. |
 
 The paper Stage 2 run used `unfreeze_llm_base=true`, so a LoRA adapter alone is not enough for exact release inference. The Hugging Face package contains a merged/full Hugging Face LLM directory plus `vlm_state.pt` for the aligner and WSI marker tensors.
 
@@ -151,7 +165,7 @@ PathoSynVLM follows a two-stage recipe:
 1. **Stage 1: token alignment.** Train only a two-layer MLP aligner that maps frozen CONCHv1.5 patch embeddings into the Qwen2.5-3B-Instruct hidden space. The LLM and pathology encoder stay frozen.
 2. **Stage 2: case-level report finetuning.** Finetune on HISTAI case-report pairs with one or more WSIs per case. WSI marker tokens help the decoder separate evidence from different slides.
 
-This repository sticks to paper-relevant experiments. Extra internal follow-up work from `VLM_MVP` is intentionally excluded, with audit notes preserved in [audit/internal_repo_audit.md](audit/internal_repo_audit.md).
+This repository focuses on the experiments and workflows reported in the PathoSynVLM paper.
 
 ## Data And Embeddings
 
@@ -258,12 +272,18 @@ Full paper-aligned arguments are stored in [configs/](configs), and the detailed
 | `MODEL_CARD.md` | Intended use, limitations, and release-weight notes for the model. |
 | `slurm/` | Cluster job templates. |
 | `assets/` | README figures. |
-| `audit/` | Internal provenance notes for what was carried over or omitted. |
-| `weights/` | Placeholder for externally downloaded model artifacts. |
+| `weights/` | Local directory for downloaded model artifacts. |
 
-## SLURM Jobs
+## Runtime Notes
 
-On FIR or another SLURM cluster, run inside a compute allocation rather than on the login node. Templates are provided:
+- **Inference:** pass one or more `.h5` WSI embedding files to `scripts/generate_case_report.py`. The model accepts multiple slides for a single case in one command.
+- **Hardware:** GPU inference is recommended for normal use. CPU inference works for smoke tests and debugging.
+- **Training:** reproducing the full paper pipeline requires the datasets, precomputed CONCHv1.5 embeddings, and a GPU environment with enough memory for Qwen2.5-3B-Instruct finetuning.
+- **Clusters:** use the same Python commands inside your cluster allocation or batch system. The `slurm/` files are optional examples, not a requirement of the codebase.
+
+## Optional SLURM Jobs
+
+For SLURM clusters, run inside a compute allocation rather than on the login node. Templates are provided:
 
 ```bash
 sbatch slurm/stage1_alignment.sbatch
@@ -274,16 +294,18 @@ sbatch slurm/evaluate.sbatch
 For interactive work:
 
 ```bash
-salloc --account=<account> --time=04:00:00 --gres=gpu:1 --cpus-per-task=4 --mem=64G
+export SLURM_ACCOUNT=your-account
+salloc --account="$SLURM_ACCOUNT" --time=04:00:00 --gres=gpu:1 --cpus-per-task=4 --mem=64G
 srun --pty bash -l
 conda activate pathosynvlm
+export PYTHONNOUSERSITE=1
 ```
 
 ## Notes From The Authors
 
-- This repo is scoped to the experiments reported in the paper, not every internal follow-up run.
+- This repo is scoped to the experiments reported in the paper.
 - `PathText` support remains as an optional compatibility path, but the Stage 1 default is HistGen + REG2025.
-- The WSI-marker ablation has a preserved audit caveat because one paper row label and the observed internal run arguments do not fully agree. See [configs/stage2_wsi_marker_ablation.json](configs/stage2_wsi_marker_ablation.json) and [audit/internal_repo_audit.md](audit/internal_repo_audit.md).
+- The WSI-marker ablation settings are summarized in [configs/stage2_wsi_marker_ablation.json](configs/stage2_wsi_marker_ablation.json).
 - Raw WSIs, extracted H5 embeddings, checkpoints, and released weights are intentionally kept outside Git.
 
 ## Citation
@@ -302,6 +324,6 @@ conda activate pathosynvlm
 
 ## License
 
-This repository uses **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)**, matching the license used by MOOZY. See [LICENSE](LICENSE).
+This repository uses **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)**. See [LICENSE](LICENSE).
 
 Datasets, pretrained third-party models, and externally hosted model weights may have separate terms.

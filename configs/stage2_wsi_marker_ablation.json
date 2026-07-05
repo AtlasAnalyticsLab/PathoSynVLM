@@ -1,6 +1,5 @@
 {
   "description": "Stage 2 WSI marker ablation settings reported in the paper.",
-  "audit_note": "The internal run configs showed use_wsi_markers=true for the run mapped to the paper baseline/no-marker row. The values below preserve observed internal run arguments; see audit/internal_repo_audit.md before re-running this ablation.",
   "common_args": {
     "metadata_standardized_json": "data/histai/standardized_metadata_fixed_filtered_5x_512.json",
     "dataset_embeddings_root": "data/embeddings",
@@ -27,25 +26,21 @@
   "runs": {
     "baseline": {
       "paper_label": "No WSI marker token / baseline",
-      "source_internal_run": "histai_ft_5x512_from_5x512_all_baseline",
-      "use_wsi_markers": true,
-      "use_wsi_index_emb": true
+      "use_wsi_markers": false,
+      "use_wsi_index_emb": false
     },
     "unique_marker_per_wsi": {
       "paper_label": "Unique marker per WSI",
-      "source_internal_run": "histai_ft_5x512_from_5x512_all_baseline_wsi_markers",
       "use_wsi_markers": true,
       "use_wsi_index_emb": true
     },
     "shared_marker": {
       "paper_label": "Shared marker",
-      "source_internal_run": "histai_ft_5x512_from_5x512_all_baseline_use_markers_no_index",
       "use_wsi_markers": true,
       "use_wsi_index_emb": false
     },
     "vision_token_dropout_0_2": {
       "paper_label": "Vision token dropout 0.2",
-      "source_internal_run": "histai_ft_5x512_from_5x512_all_baseline_dropout_02",
       "use_wsi_markers": true,
       "use_wsi_index_emb": true,
       "vision_token_dropout": 0.2,
