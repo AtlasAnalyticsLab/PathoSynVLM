@@ -56,4 +56,4 @@ The internal run configs show `use_wsi_markers=true` for multiple rows, while th
 
 ## Weight Release Note
 
-The paper Stage 2 runs used `unfreeze_llm_base=true`. A standalone LoRA adapter is not enough for exact inference unless the trained base update is included. The release should upload a merged HF model package generated with `scripts/export_release_weights.py`, plus `vlm_state.pt` for the aligner and WSI marker tensors.
+The paper Stage 2 runs used `unfreeze_llm_base=true`. A standalone LoRA adapter is not enough for exact inference unless the trained base update is included. The prepared Hugging Face upload root contains the merged HF model package generated with `scripts/export_release_weights.py`, plus `vlm_state.pt` for the aligner and WSI marker tensors.

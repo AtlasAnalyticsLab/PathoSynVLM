@@ -65,11 +65,11 @@ weights/pathosynvlm-stage2-main/
   best_checkpoint_summary.json
 ```
 
-Example after the weight URL is available:
+Example after the model repository is uploaded:
 
 ```bash
-# Example only. Replace with the final author-uploaded model repo or release URL.
-huggingface-cli download <ORG_OR_USER>/pathosynvlm-stage2-main \
+# Example only. Replace with the final author-uploaded model repo.
+hf download <ORG_OR_USER>/pathosynvlm-stage2-main \
   --local-dir weights/pathosynvlm-stage2-main
 
 python scripts/generate_case_report.py \
@@ -110,7 +110,7 @@ There are two different weight workflows:
 | **Download released weights** | Most users | Download the author-uploaded `weights/pathosynvlm-stage2-main/` package and run inference or evaluation directly. |
 | **Export weights** | Authors or retrainers | Run `scripts/export_release_weights.py` on a completed Stage 2 training run to create the inference package. |
 
-The paper Stage 2 run used `unfreeze_llm_base=true`, so a LoRA adapter alone is not enough for exact release inference. The package should include a merged/full Hugging Face LLM directory plus `vlm_state.pt` for the aligner and WSI marker tensors.
+The paper Stage 2 run used `unfreeze_llm_base=true`, so a LoRA adapter alone is not enough for exact release inference. The Hugging Face package contains a merged/full Hugging Face LLM directory plus `vlm_state.pt` for the aligner and WSI marker tensors.
 
 Export command for the authors:
 
@@ -121,7 +121,8 @@ python scripts/export_release_weights.py \
   --overwrite
 ```
 
-Read [docs/weights.md](docs/weights.md) before uploading the artifact.
+Read [docs/weights.md](docs/weights.md) for the download/export distinction.
+The Hugging Face upload root and validation steps are in [docs/huggingface_release.md](docs/huggingface_release.md).
 
 The release model card is in [MODEL_CARD.md](MODEL_CARD.md).
 
@@ -253,7 +254,7 @@ Full paper-aligned arguments are stored in [configs/](configs), and the detailed
 | `pathosynvlm/` | Model, data loaders, alignment modules, and metrics. |
 | `scripts/` | Metadata prep, training, evaluation, inference, and weight export entry points. |
 | `configs/` | Paper-aligned configs and reported result values. |
-| `docs/` | Data, embedding, paper-pipeline, weight-release, and release-checklist docs. |
+| `docs/` | Data, embedding, paper-pipeline, weight-release, Hugging Face release, and release-checklist docs. |
 | `MODEL_CARD.md` | Intended use, limitations, and release-weight notes for the model. |
 | `slurm/` | Cluster job templates. |
 | `assets/` | README figures. |

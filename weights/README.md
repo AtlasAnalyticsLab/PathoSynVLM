@@ -11,8 +11,8 @@ weights/pathosynvlm-stage2-main/
   config.json
   vlm_state.pt
   tokenizer/
-  llm/              # merged full model, preferred for release
+  llm/              # merged full model for the paper release
   best_checkpoint_summary.json
 ```
 
-Use `scripts/export_release_weights.py` to create this layout from a completed local training run before uploading the official release package.
+Use `scripts/export_release_weights.py` only when creating this layout from a completed local training run. The prepared Hugging Face package should be downloaded directly once uploaded.

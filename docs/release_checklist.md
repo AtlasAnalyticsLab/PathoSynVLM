@@ -3,7 +3,8 @@
 Before releasing the repository:
 
 - Confirm the repository `LICENSE` is acceptable for release. This repo currently follows MOOZY with CC BY-NC-SA 4.0.
-- Upload `weights/pathosynvlm-stage2-main/` to the selected artifact host after running `scripts/export_release_weights.py`.
+- Upload `/home/chengj60/scratch/PathoSynVLM_HF_release_review/hf_repo_preview` to the selected Hugging Face model repository.
+- Confirm the Hugging Face upload root contains `llm/model.safetensors` and `vlm_state.pt`, and that `find <upload-root> -type l` prints nothing.
 - Replace the placeholder Hugging Face command in the README with the final model-weight URL or repository id.
 - Replace `<repo-url>` in the README after the GitHub repository is created.
 - Add the final paper citation if a conference or journal version supersedes the arXiv preprint.

@@ -24,16 +24,18 @@ weights/pathosynvlm-stage2-main/
   best_checkpoint_summary.json
 ```
 
-`llm/` should be a merged Hugging Face model directory whenever the LLM base was trainable. This matters because the paper run used `unfreeze_llm_base=true`; a LoRA adapter alone is not sufficient for exact reruns unless the base updates are also included.
+`llm/` is a merged Hugging Face model directory for the paper release. This matters because the paper run used `unfreeze_llm_base=true`; a LoRA adapter alone is not sufficient for exact reruns unless the base updates are also included.
 
-After the final artifact URL is known, the README command should be updated, for example:
+After the final Hugging Face repo id is known, the README command should be updated, for example:
 
 ```bash
-huggingface-cli download <ORG_OR_USER>/pathosynvlm-stage2-main \
+hf download <ORG_OR_USER>/pathosynvlm-stage2-main \
   --local-dir weights/pathosynvlm-stage2-main
 ```
 
 If the release is hosted somewhere other than Hugging Face, download and unpack it so that `weights/pathosynvlm-stage2-main/config.json` exists.
+
+The prepared Hugging Face upload root is the model repository itself: it contains the real `llm/model.safetensors` and `vlm_state.pt` files, not symlinks or placeholder pointers. See [docs/huggingface_release.md](huggingface_release.md) for the exact upload-root validation steps.
 
 ## What `export_release_weights.py` Does
 
