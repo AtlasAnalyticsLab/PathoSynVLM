@@ -38,6 +38,7 @@ if str(REPO_ROOT) not in sys.path:
 from pathosynvlm.histai_dataset import create_train_val_dataloaders, normalize_target_field_name, resolve_target_field_label
 from pathosynvlm.metrics import summarize_field_accuracy
 from pathosynvlm.model import PathoSynVLM, load_aligner_from_checkpoint
+from pathosynvlm.paths import get_path_defaults
 
 
 def set_seed(seed: int) -> None:
@@ -1044,20 +1045,22 @@ def parse_args() -> argparse.Namespace:
         raise argparse.ArgumentTypeError(f"Invalid boolean value: {x!r}")
 
     # Data
+    paths = get_path_defaults(repo_root)
     p.add_argument(
         "--metadata_standardized_json",
         type=str,
-        default=str(repo_root / "data" / "histai" / "standardized_metadata_fixed_filtered_5x_512.json"),
+        default=str(paths.histai_metadata_dir / "standardized_metadata_fixed_filtered_5x_512.json"),
     )
     p.add_argument(
         "--dataset_embeddings_root",
         type=str,
-        default=str(repo_root / "data" / "embeddings"),
+        default=str(paths.embeddings_root),
+        help="Root containing dataset embedding folders. Defaults to PATHOSYNVLM_EMBEDDINGS_ROOT or data/embeddings.",
     )
     p.add_argument(
         "--alignment_metadata_json",
         type=str,
-        default=str(repo_root / "data" / "stage1" / "merged_metadata_3datasets_filtered_conch_v15.json"),
+        default=str(paths.stage1_metadata_dir / "merged_metadata_3datasets_filtered_conch_v15.json"),
     )
     p.add_argument("--feature_key", type=str, default="conch_v15")
     p.add_argument("--patch_level", type=str, default="5x_512", choices=["1x_512", "5x_512"])
@@ -1113,7 +1116,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--no_strict_aligner_load", dest="strict_aligner_load", action="store_false")
 
     # Train
-    p.add_argument("--output_dir", type=str, required=True)
+    p.add_argument("--output_dir", type=str, default=str(paths.runs_root / "stage2_main"))
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--epochs", type=int, default=20)
     p.add_argument("--batch_size", type=int, default=1)

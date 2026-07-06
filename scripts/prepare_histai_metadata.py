@@ -3,11 +3,18 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
 from collections import Counter
 from pathlib import Path
 from typing import Any
 
 import h5py
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from pathosynvlm.paths import get_path_defaults
 
 
 def _parse_case_mapping(case_mapping: str) -> tuple[str, int] | None:
@@ -257,19 +264,21 @@ def _write_stats_md(
 
 
 def main() -> None:
-    repo_root = Path(__file__).resolve().parents[1]
+    repo_root = REPO_ROOT
+    paths = get_path_defaults(repo_root)
     p = argparse.ArgumentParser(
         description="Filter standardized HistAI metadata to cases that have embeddings for each patch level."
     )
     p.add_argument(
         "--metadata-standardized-json",
         type=Path,
-        default=repo_root / "data" / "raw" / "histai" / "standardized_metadata_fixed.json",
+        default=paths.raw_data_root / "histai" / "standardized_metadata_fixed.json",
     )
     p.add_argument(
         "--dataset-embeddings-root",
         type=Path,
-        default=repo_root / "data" / "embeddings",
+        default=paths.embeddings_root,
+        help="Root containing dataset embedding folders. Defaults to PATHOSYNVLM_EMBEDDINGS_ROOT or data/embeddings.",
     )
     p.add_argument("--feature-key", type=str, default="conch_v15")
     p.add_argument("--patch-levels", type=str, default="1x_512,5x_512")
@@ -278,7 +287,7 @@ def main() -> None:
     p.add_argument(
         "--output-dir",
         type=Path,
-        default=repo_root / "data" / "histai",
+        default=paths.histai_metadata_dir,
     )
     p.add_argument("--output-prefix", type=str, default="standardized_metadata_fixed_filtered")
     args = p.parse_args()

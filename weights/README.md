@@ -7,7 +7,7 @@ For normal inference, users should download the released model artifact into thi
 Expected inference package layout:
 
 ```text
-weights/pathosynvlm-stage2-main/
+$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main/
   config.json
   vlm_state.pt
   tokenizer/

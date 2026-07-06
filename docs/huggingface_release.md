@@ -28,7 +28,8 @@ Set the paths for your local release workspace:
 ```bash
 export PATHOSYNVLM_HF_REPO=AtlasAnalyticsLab/pathosynvlm-stage2-main
 export PATHOSYNVLM_GITHUB_URL=https://github.com/AtlasAnalyticsLab/PathoSynVLM
-export PATHOSYNVLM_STAGE2_RUN=runs/stage2_main
+export PATHOSYNVLM_RUNS_ROOT="${PATHOSYNVLM_RUNS_ROOT:-$PWD/runs}"
+export PATHOSYNVLM_STAGE2_RUN="$PATHOSYNVLM_RUNS_ROOT/stage2_main"
 export PATHOSYNVLM_HF_ROOT=release/huggingface/pathosynvlm-stage2-main
 ```
 

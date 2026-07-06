@@ -33,6 +33,7 @@ Paper: https://arxiv.org/abs/2605.30716
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [Model Weights](#model-weights)
+- [Configure Local Paths](#configure-local-paths)
 - [Headline Results](#headline-results)
 - [Method Overview](#method-overview)
 - [Data And Embeddings](#data-and-embeddings)
@@ -69,13 +70,13 @@ This is the path for users who want to generate reports without retraining.
 Model weights are distributed separately from Git. Download the released weight package into:
 
 ```text
-weights/pathosynvlm-stage2-main/
+$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main/
 ```
 
 Expected layout:
 
 ```text
-weights/pathosynvlm-stage2-main/
+$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main/
   config.json
   vlm_state.pt
   tokenizer/
@@ -86,18 +87,19 @@ weights/pathosynvlm-stage2-main/
 Download from Hugging Face:
 
 ```bash
+source configs/paths.example.env
+
 export PATHOSYNVLM_HF_REPO=AtlasAnalyticsLab/pathosynvlm-stage2-main
 hf download "$PATHOSYNVLM_HF_REPO" \
-  --local-dir weights/pathosynvlm-stage2-main
+  --local-dir "$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main"
 
 python scripts/generate_case_report.py \
-  --weights weights/pathosynvlm-stage2-main \
-  --embeddings data/embeddings/HISTAI-skin-b2/conch_v15/5x_512/patches/example_1.h5 \
-               data/embeddings/HISTAI-skin-b2/conch_v15/5x_512/patches/example_2.h5 \
+  --embeddings HISTAI-skin-b2/conch_v15/5x_512/patches/example_1.h5 \
+               HISTAI-skin-b2/conch_v15/5x_512/patches/example_2.h5 \
   --output_json report.json
 ```
 
-Replace the example `.h5` paths with the slide embedding files for one case.
+Replace the example `.h5` paths with the slide embedding files for one case. Relative embedding paths are resolved under `PATHOSYNVLM_EMBEDDINGS_ROOT`; absolute paths also work.
 
 Users **do not need to create weights themselves** for inference once the model weights are available. The export script exists for converting a completed training run into the release weight layout.
 
@@ -121,7 +123,7 @@ There are two different weight workflows:
 
 | Workflow | Who uses it | What happens |
 |---|---|---|
-| **Download released weights** | Most users | Download the released `weights/pathosynvlm-stage2-main/` package and run inference or evaluation directly. |
+| **Download released weights** | Most users | Download the released `$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main/` package and run inference or evaluation directly. |
 | **Export weights** | Retrainers | Run `scripts/export_release_weights.py` on a completed Stage 2 training run to create the inference package. |
 
 The paper Stage 2 run used `unfreeze_llm_base=true`, so a LoRA adapter alone is not enough for exact release inference. The Hugging Face package contains a merged/full Hugging Face LLM directory plus `vlm_state.pt` for the aligner and WSI marker tensors.
@@ -130,8 +132,8 @@ Export command for the authors:
 
 ```bash
 python scripts/export_release_weights.py \
-  --run_dir runs/stage2_main \
-  --output_dir weights/pathosynvlm-stage2-main \
+  --run_dir "$PATHOSYNVLM_RUNS_ROOT/stage2_main" \
+  --output_dir "$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main" \
   --overwrite
 ```
 
@@ -139,6 +141,39 @@ Read [docs/weights.md](docs/weights.md) for the download/export distinction.
 The Hugging Face upload root and validation steps are in [docs/huggingface_release.md](docs/huggingface_release.md).
 
 The release model card is in [MODEL_CARD.md](MODEL_CARD.md).
+
+## Configure Local Paths
+
+PathoSynVLM can use repo-local storage or external dataset/embedding folders. By default, scripts look under `data/`, `runs/`, and `weights/` inside the repository. If your raw metadata, embeddings, runs, or weights already live elsewhere, export these variables once before running commands:
+
+```bash
+export PATHOSYNVLM_DATA_ROOT="$PWD/data"
+export PATHOSYNVLM_RAW_DATA_ROOT="$PATHOSYNVLM_DATA_ROOT/raw"
+export PATHOSYNVLM_EMBEDDINGS_ROOT="$PATHOSYNVLM_DATA_ROOT/embeddings"
+export PATHOSYNVLM_STAGE1_METADATA_DIR="$PATHOSYNVLM_DATA_ROOT/stage1"
+export PATHOSYNVLM_HISTAI_METADATA_DIR="$PATHOSYNVLM_DATA_ROOT/histai"
+export PATHOSYNVLM_RUNS_ROOT="$PWD/runs"
+export PATHOSYNVLM_WEIGHTS_ROOT="$PWD/weights"
+```
+
+The same defaults are provided in [configs/paths.example.env](configs/paths.example.env):
+
+```bash
+source configs/paths.example.env
+```
+
+For external storage, set only the paths you need, for example:
+
+```bash
+export PATHOSYNVLM_RAW_DATA_ROOT="/data/pathosynvlm/raw"
+export PATHOSYNVLM_EMBEDDINGS_ROOT="/features/pathosynvlm/conch_embeddings"
+export PATHOSYNVLM_STAGE1_METADATA_DIR="/outputs/pathosynvlm/stage1_metadata"
+export PATHOSYNVLM_HISTAI_METADATA_DIR="/outputs/pathosynvlm/histai_metadata"
+export PATHOSYNVLM_RUNS_ROOT="/outputs/pathosynvlm/runs"
+export PATHOSYNVLM_WEIGHTS_ROOT="/models/pathosynvlm"
+```
+
+Every path can still be overridden per command with flags such as `--dataset-embeddings-root`, `--metadata_json`, `--metadata_standardized_json`, `--embedding-root`, `--weights`, or `--output_dir`.
 
 ## Headline Results
 
@@ -175,22 +210,21 @@ Expected data sources:
 - REG2025: https://reg2025.grand-challenge.org/
 - HISTAI: https://github.com/HistAI/HISTAI
 
-Expected local layout:
+Expected layout under the configured roots:
 
 ```text
-data/
-  raw/
-    histgen/annotation_update.json
-    reg2025/train.json
-    histai/standardized_metadata_fixed.json
-  stage1/
-    merged_metadata_3datasets_filtered_conch_v15.json
-  histai/
-    standardized_metadata_fixed_filtered_5x_512.json
-  embeddings/
-    HistGen-train/conch_v15/5x_512/patches/*.h5
-    REG_dataset/REG_train/conch_v15/5x_512/patches/*.h5
-    HISTAI-*/conch_v15/5x_512/patches/*.h5
+$PATHOSYNVLM_RAW_DATA_ROOT/
+  histgen/annotation_update.json
+  reg2025/train.json
+  histai/standardized_metadata_fixed.json
+$PATHOSYNVLM_STAGE1_METADATA_DIR/
+  merged_metadata_3datasets_filtered_conch_v15.json
+$PATHOSYNVLM_HISTAI_METADATA_DIR/
+  standardized_metadata_fixed_filtered_5x_512.json
+$PATHOSYNVLM_EMBEDDINGS_ROOT/
+  HistGen-train/conch_v15/5x_512/patches/*.h5
+  REG_dataset/REG_train/conch_v15/5x_512/patches/*.h5
+  HISTAI-*/conch_v15/5x_512/patches/*.h5
 ```
 
 Each H5 file should contain:
@@ -207,9 +241,9 @@ Prepare Stage 1 metadata:
 
 ```bash
 python scripts/prepare_stage1_metadata.py \
-  --histgen-json data/raw/histgen/annotation_update.json \
-  --reg-json data/raw/reg2025/train.json \
-  --dataset-embeddings-root data/embeddings \
+  --histgen-json "$PATHOSYNVLM_RAW_DATA_ROOT/histgen/annotation_update.json" \
+  --reg-json "$PATHOSYNVLM_RAW_DATA_ROOT/reg2025/train.json" \
+  --dataset-embeddings-root "$PATHOSYNVLM_EMBEDDINGS_ROOT" \
   --patch-level 5x_512
 ```
 
@@ -217,8 +251,8 @@ Prepare Stage 2 metadata:
 
 ```bash
 python scripts/prepare_histai_metadata.py \
-  --metadata-standardized-json data/raw/histai/standardized_metadata_fixed.json \
-  --dataset-embeddings-root data/embeddings \
+  --metadata-standardized-json "$PATHOSYNVLM_RAW_DATA_ROOT/histai/standardized_metadata_fixed.json" \
+  --dataset-embeddings-root "$PATHOSYNVLM_EMBEDDINGS_ROOT" \
   --patch-levels 5x_512
 ```
 
@@ -226,20 +260,20 @@ Train Stage 1:
 
 ```bash
 python scripts/train_stage1_alignment.py \
-  --metadata_json data/stage1/merged_metadata_3datasets_filtered_conch_v15.json \
-  --dataset_embeddings_root data/embeddings \
+  --metadata_json "$PATHOSYNVLM_STAGE1_METADATA_DIR/merged_metadata_3datasets_filtered_conch_v15.json" \
+  --dataset_embeddings_root "$PATHOSYNVLM_EMBEDDINGS_ROOT" \
   --datasets histgen,reg_dataset \
-  --output_dir runs/stage1_alignment
+  --output_dir "$PATHOSYNVLM_RUNS_ROOT/stage1_alignment"
 ```
 
 Train Stage 2 main paper run:
 
 ```bash
 python scripts/train_stage2_histai.py \
-  --metadata_standardized_json data/histai/standardized_metadata_fixed_filtered_5x_512.json \
-  --dataset_embeddings_root data/embeddings \
-  --aligner_init runs/stage1_alignment/best_aligner_weights.pt \
-  --output_dir runs/stage2_main \
+  --metadata_standardized_json "$PATHOSYNVLM_HISTAI_METADATA_DIR/standardized_metadata_fixed_filtered_5x_512.json" \
+  --dataset_embeddings_root "$PATHOSYNVLM_EMBEDDINGS_ROOT" \
+  --aligner_init "$PATHOSYNVLM_RUNS_ROOT/stage1_alignment/best_aligner_weights.pt" \
+  --output_dir "$PATHOSYNVLM_RUNS_ROOT/stage2_main" \
   --prompt_style double \
   --max_text_length 384 \
   --max_vision_tokens 4096 \
@@ -252,14 +286,15 @@ Evaluate:
 
 ```bash
 python scripts/evaluate_checkpoint.py \
-  --finetune_run_dir runs/stage2_main \
+  --finetune_run_dir "$PATHOSYNVLM_RUNS_ROOT/stage2_main" \
   --dataset_scope histai \
-  --histai_metadata_standardized_json data/histai/standardized_metadata_fixed_filtered_5x_512.json \
-  --dataset_embeddings_root data/embeddings \
-  --output_json runs/stage2_main/eval_histai.json
+  --histai_metadata_standardized_json "$PATHOSYNVLM_HISTAI_METADATA_DIR/standardized_metadata_fixed_filtered_5x_512.json" \
+  --dataset_embeddings_root "$PATHOSYNVLM_EMBEDDINGS_ROOT" \
+  --output_json "$PATHOSYNVLM_RUNS_ROOT/stage2_main/eval_histai.json"
 ```
 
-Full paper-aligned arguments are stored in [configs/](configs), and the detailed run guide is in [docs/paper_pipeline.md](docs/paper_pipeline.md).
+Full paper-aligned reference settings are stored in [configs/](configs), and the detailed run guide is in [docs/paper_pipeline.md](docs/paper_pipeline.md).
+Path fields in the JSON configs use `$PATHOSYNVLM_*` notation to show the intended roots; the training scripts do not read these JSON files automatically, so expand or replace those strings if you feed the JSON into your own launcher.
 
 ## Repository Map
 

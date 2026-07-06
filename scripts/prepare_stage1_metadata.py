@@ -3,10 +3,17 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from pathosynvlm.paths import get_path_defaults
 
 
 @dataclass(frozen=True)
@@ -275,19 +282,21 @@ def filter_records_by_embeddings(
 
 
 def main() -> None:
-    repo_root = Path(__file__).resolve().parents[1]
-    default_dir = repo_root / "data" / "stage1"
+    repo_root = REPO_ROOT
+    paths = get_path_defaults(repo_root)
+    default_dir = paths.stage1_metadata_dir
 
     parser = argparse.ArgumentParser(description="Merge and filter HistGen/REG metadata for Stage 1 alignment training.")
-    parser.add_argument("--histgen-json", type=Path, default=repo_root / "data" / "raw" / "histgen" / "annotation_update.json")
-    parser.add_argument("--pathtext-json", type=Path, default=repo_root / "data" / "raw" / "pathtext" / "PathText.json")
+    parser.add_argument("--histgen-json", type=Path, default=paths.raw_data_root / "histgen" / "annotation_update.json")
+    parser.add_argument("--pathtext-json", type=Path, default=paths.raw_data_root / "pathtext" / "PathText.json")
     parser.add_argument("--include-pathtext", action="store_true", help="Include PathText compatibility data (not used in the paper default).")
-    parser.add_argument("--reg-json", type=Path, default=repo_root / "data" / "raw" / "reg2025" / "train.json")
+    parser.add_argument("--reg-json", type=Path, default=paths.raw_data_root / "reg2025" / "train.json")
 
     parser.add_argument(
         "--dataset-embeddings-root",
         type=Path,
-        default=repo_root / "data" / "embeddings",
+        default=paths.embeddings_root,
+        help="Root containing dataset embedding folders. Defaults to PATHOSYNVLM_EMBEDDINGS_ROOT or data/embeddings.",
     )
     parser.add_argument("--patch-level", default="5x_512")
 

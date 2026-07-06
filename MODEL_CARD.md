@@ -37,7 +37,7 @@ Users are responsible for following each dataset's access terms and redistributi
 Released weights are distributed outside Git, for example through Hugging Face or GitHub Releases, and downloaded into:
 
 ```text
-weights/pathosynvlm-stage2-main/
+$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main/
 ```
 
 See [docs/weights.md](docs/weights.md) for the required package layout. The Stage 2 paper run used `unfreeze_llm_base=true`, so the release package includes the merged/full LLM weights, not only a LoRA adapter.

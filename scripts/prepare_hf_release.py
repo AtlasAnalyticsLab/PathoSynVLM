@@ -152,17 +152,20 @@ def _model_card(
         Download this model repository:
 
         ```bash
-        hf download {repo_id} --local-dir weights/pathosynvlm-stage2-main
+        source configs/paths.example.env
+        hf download {repo_id} --local-dir "$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main"
         ```
 
         Generate a case-level report from one or more slide embedding files:
 
         ```bash
         python scripts/generate_case_report.py \\
-          --weights weights/pathosynvlm-stage2-main \\
           --embeddings slide_1.h5 slide_2.h5 \\
           --output_json report.json
         ```
+
+        Relative `--embeddings` paths are resolved under
+        `PATHOSYNVLM_EMBEDDINGS_ROOT`. Absolute `.h5` paths also work.
 
         The output follows:
 
@@ -191,7 +194,6 @@ def _model_card(
 
         ```bash
         python scripts/generate_case_report.py \\
-          --weights weights/pathosynvlm-stage2-main \\
           --embeddings case_slide_1.h5 case_slide_2.h5 \\
           --output_json report.json
         ```
@@ -425,13 +427,14 @@ def main() -> None:
             {
                 "case_id": "example_case",
                 "slide_embeddings": [
-                    "data/embeddings/HISTAI-example/conch_v15/5x_512/patches/slide_1.h5",
-                    "data/embeddings/HISTAI-example/conch_v15/5x_512/patches/slide_2.h5",
+                    "HISTAI-example/conch_v15/5x_512/patches/slide_1.h5",
+                    "HISTAI-example/conch_v15/5x_512/patches/slide_2.h5",
                 ],
                 "feature_key": "conch_v15",
                 "command": (
-                    "python scripts/generate_case_report.py --weights weights/pathosynvlm-stage2-main "
-                    "--embeddings slide_1.h5 slide_2.h5 --output_json report.json"
+                    "python scripts/generate_case_report.py "
+                    "--embeddings HISTAI-example/conch_v15/5x_512/patches/slide_1.h5 "
+                    "HISTAI-example/conch_v15/5x_512/patches/slide_2.h5 --output_json report.json"
                 ),
             },
             indent=2,
@@ -486,7 +489,8 @@ def main() -> None:
 
         ```bash
         cd {REPO_ROOT}
-        export PATHOSYNVLM_STAGE2_RUN=runs/stage2_main
+        export PATHOSYNVLM_RUNS_ROOT="${{PATHOSYNVLM_RUNS_ROOT:-$PWD/runs}}"
+        export PATHOSYNVLM_STAGE2_RUN="$PATHOSYNVLM_RUNS_ROOT/stage2_main"
         python scripts/export_release_weights.py \\
           --run_dir "$PATHOSYNVLM_STAGE2_RUN" \\
           --output_dir {hf_repo_dir} \\

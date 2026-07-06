@@ -2,8 +2,8 @@
   "description": "Paper Stage 1 baseline: aligner-only training on HistGen + REG2025 with CONCHv1.5 5x_512 embeddings.",
   "script": "scripts/train_stage1_alignment.py",
   "args": {
-    "metadata_json": "data/stage1/merged_metadata_3datasets_filtered_conch_v15.json",
-    "dataset_embeddings_root": "data/embeddings",
+    "metadata_json": "$PATHOSYNVLM_STAGE1_METADATA_DIR/merged_metadata_3datasets_filtered_conch_v15.json",
+    "dataset_embeddings_root": "$PATHOSYNVLM_EMBEDDINGS_ROOT",
     "feature_key": "conch_v15",
     "patch_level": "5x_512",
     "datasets": "histgen,reg_dataset",

@@ -19,6 +19,7 @@ from pathosynvlm.alignment_dataset import load_tokenizer
 from pathosynvlm.histai_dataset import create_train_val_dataloaders as create_histai_train_val_dataloaders
 from pathosynvlm.metrics import summarize_field_accuracy
 from pathosynvlm.model import PathoSynVLM
+from pathosynvlm.paths import get_path_defaults
 
 
 def to_device(batch: dict[str, Any], device: torch.device) -> dict[str, Any]:
@@ -467,7 +468,8 @@ def _filter_positions_by_cases(
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Evaluate Stage-2 checkpoint on Stage-1 (3datasets) or HistAI validation split.")
     repo_root = Path(__file__).resolve().parents[1]
-    p.add_argument("--finetune_run_dir", type=Path, required=True)
+    paths = get_path_defaults(repo_root)
+    p.add_argument("--finetune_run_dir", type=Path, default=paths.runs_root / "stage2_main")
     p.add_argument("--checkpoint_step", type=int, default=-1, help="-1: auto use best_step from best_checkpoint_summary.json")
 
     p.add_argument("--dataset_scope", type=str, default="3datasets", choices=["3datasets", "histai"])
@@ -477,15 +479,15 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--alignment_metadata_json",
         type=Path,
-        default=repo_root / "data" / "stage1" / "merged_metadata_3datasets_filtered_conch_v15.json",
+        default=paths.stage1_metadata_dir / "merged_metadata_3datasets_filtered_conch_v15.json",
     )
     p.add_argument(
         "--histai_metadata_standardized_json",
         type=Path,
-        default=repo_root / "data" / "histai" / "standardized_metadata_fixed_filtered_5x_512.json",
+        default=paths.histai_metadata_dir / "standardized_metadata_fixed_filtered_5x_512.json",
     )
 
-    p.add_argument("--dataset_embeddings_root", type=Path, default=repo_root / "data" / "embeddings")
+    p.add_argument("--dataset_embeddings_root", type=Path, default=paths.embeddings_root)
     p.add_argument("--feature_key", type=str, default="")
     p.add_argument("--patch_level", type=str, default="")
     p.add_argument("--val_size", type=str, default="0.2")

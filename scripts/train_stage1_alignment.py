@@ -22,6 +22,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from pathosynvlm.alignment_dataset import create_train_val_dataloaders, load_tokenizer
 from pathosynvlm.alignment_model import build_alignment_model, freeze_for_alignment_only
+from pathosynvlm.paths import get_path_defaults
 
 
 def set_seed(seed: int) -> None:
@@ -595,17 +596,19 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Stage 1 aligner-only training on WSI-text pairs")
 
     repo_root = Path(__file__).resolve().parents[1]
+    paths = get_path_defaults(repo_root)
 
     parser.add_argument(
         "--metadata_json",
         type=str,
-        default=str(repo_root / "data" / "stage1" / "merged_metadata_3datasets_filtered_conch_v15.json"),
+        default=str(paths.stage1_metadata_dir / "merged_metadata_3datasets_filtered_conch_v15.json"),
         help="Filtered merged metadata JSON from merge_filter_3datasets_metadata.py",
     )
     parser.add_argument(
         "--dataset_embeddings_root",
         type=str,
-        default=str(repo_root / "data" / "embeddings"),
+        default=str(paths.embeddings_root),
+        help="Root containing dataset embedding folders. Defaults to PATHOSYNVLM_EMBEDDINGS_ROOT or data/embeddings.",
     )
     parser.add_argument("--feature_key", type=str, default="conch_v15")
     parser.add_argument("--patch_level", type=str, default="5x_512")
@@ -630,7 +633,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--llm", type=str, default="Qwen/Qwen2.5-3B-Instruct")
     parser.add_argument("--vision_dim", type=int, default=768)
 
-    parser.add_argument("--output_dir", type=str, default="./runs/alignment_3datasets")
+    parser.add_argument("--output_dir", type=str, default=str(paths.runs_root / "stage1_alignment"))
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--epochs", type=int, default=10)
     parser.add_argument("--batch_size", type=int, default=1)

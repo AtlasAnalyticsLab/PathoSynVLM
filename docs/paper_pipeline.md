@@ -13,17 +13,35 @@ pip install -e .
 
 On clusters, run the commands inside an allocated compute session. Keeping `PYTHONNOUSERSITE=1` avoids accidentally importing packages from a pre-existing user site.
 
+Set local storage roots once before running the pipeline. The repo-local defaults are:
+
+```bash
+source configs/paths.example.env
+```
+
+For existing external storage, override only the roots that differ:
+
+```bash
+export PATHOSYNVLM_RAW_DATA_ROOT="/data/pathosynvlm/raw"
+export PATHOSYNVLM_EMBEDDINGS_ROOT="/features/pathosynvlm/conch_embeddings"
+export PATHOSYNVLM_STAGE1_METADATA_DIR="/outputs/pathosynvlm/stage1_metadata"
+export PATHOSYNVLM_HISTAI_METADATA_DIR="/outputs/pathosynvlm/histai_metadata"
+export PATHOSYNVLM_RUNS_ROOT="/outputs/pathosynvlm/runs"
+```
+
 ## Stage 1 Baseline
 
 Config: [configs/stage1_alignment_paper.json](../configs/stage1_alignment_paper.json)
 
+Path fields in the config JSON use `$PATHOSYNVLM_*` notation. The scripts do not read these JSON files automatically; expand or replace those values if your launcher reads JSON directly instead of using the shell commands below.
+
 ```bash
 python scripts/train_stage1_alignment.py \
-  --metadata_json data/stage1/merged_metadata_3datasets_filtered_conch_v15.json \
-  --dataset_embeddings_root data/embeddings \
+  --metadata_json "$PATHOSYNVLM_STAGE1_METADATA_DIR/merged_metadata_3datasets_filtered_conch_v15.json" \
+  --dataset_embeddings_root "$PATHOSYNVLM_EMBEDDINGS_ROOT" \
   --datasets histgen,reg_dataset \
   --patch_level 5x_512 \
-  --output_dir runs/stage1_alignment
+  --output_dir "$PATHOSYNVLM_RUNS_ROOT/stage1_alignment"
 ```
 
 Reported Stage 1 baseline metrics:
@@ -38,10 +56,10 @@ Config: [configs/stage2_main_paper.json](../configs/stage2_main_paper.json)
 
 ```bash
 python scripts/train_stage2_histai.py \
-  --metadata_standardized_json data/histai/standardized_metadata_fixed_filtered_5x_512.json \
-  --dataset_embeddings_root data/embeddings \
-  --aligner_init runs/stage1_alignment/best_aligner_weights.pt \
-  --output_dir runs/stage2_main \
+  --metadata_standardized_json "$PATHOSYNVLM_HISTAI_METADATA_DIR/standardized_metadata_fixed_filtered_5x_512.json" \
+  --dataset_embeddings_root "$PATHOSYNVLM_EMBEDDINGS_ROOT" \
+  --aligner_init "$PATHOSYNVLM_RUNS_ROOT/stage1_alignment/best_aligner_weights.pt" \
+  --output_dir "$PATHOSYNVLM_RUNS_ROOT/stage2_main" \
   --prompt_style double \
   --max_text_length 384 \
   --max_vision_tokens 4096 \
@@ -54,11 +72,11 @@ Evaluate:
 
 ```bash
 python scripts/evaluate_checkpoint.py \
-  --finetune_run_dir runs/stage2_main \
+  --finetune_run_dir "$PATHOSYNVLM_RUNS_ROOT/stage2_main" \
   --dataset_scope histai \
-  --histai_metadata_standardized_json data/histai/standardized_metadata_fixed_filtered_5x_512.json \
-  --dataset_embeddings_root data/embeddings \
-  --output_json runs/stage2_main/eval_histai.json
+  --histai_metadata_standardized_json "$PATHOSYNVLM_HISTAI_METADATA_DIR/standardized_metadata_fixed_filtered_5x_512.json" \
+  --dataset_embeddings_root "$PATHOSYNVLM_EMBEDDINGS_ROOT" \
+  --output_json "$PATHOSYNVLM_RUNS_ROOT/stage2_main/eval_histai.json"
 ```
 
 Reported Stage 2 main metrics:

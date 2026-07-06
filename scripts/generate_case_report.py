@@ -17,6 +17,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from pathosynvlm.histai_dataset import resolve_prompt_text, resolve_target_field_label
 from pathosynvlm.model import PathoSynVLM
+from pathosynvlm.paths import get_path_defaults, resolve_existing_or_rooted
 
 
 def _read_h5_features(path: Path, feature_key: str) -> np.ndarray:
@@ -105,8 +106,20 @@ def _load_release_model(weights_dir: Path, device: torch.device, dtype: torch.dt
 
 
 def parse_args() -> argparse.Namespace:
+    paths = get_path_defaults(REPO_ROOT)
     p = argparse.ArgumentParser(description="Generate a case-level pathology report from precomputed WSI embeddings.")
-    p.add_argument("--weights", type=Path, required=True, help="Release weight package directory.")
+    p.add_argument(
+        "--weights",
+        type=Path,
+        default=paths.weights_root / "pathosynvlm-stage2-main",
+        help="Release weight package directory. Defaults to PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main.",
+    )
+    p.add_argument(
+        "--embedding-root",
+        type=Path,
+        default=paths.embeddings_root,
+        help="Base directory used to resolve relative --embeddings paths.",
+    )
     p.add_argument("--embeddings", type=Path, nargs="+", required=True, help="One or more slide .h5 embedding files for one case.")
     p.add_argument("--feature_key", type=str, default="", help="Defaults to feature_key in weights/config.json.")
     p.add_argument("--max_vision_tokens", type=int, default=0, help="Optional cap across all WSIs; 0 disables.")
@@ -123,6 +136,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    paths = get_path_defaults(REPO_ROOT)
     device = torch.device(args.device)
     dtype = None
     if args.dtype == "bf16":
@@ -130,7 +144,8 @@ def main() -> None:
     elif args.dtype == "fp16":
         dtype = torch.float16
 
-    model, tokenizer, cfg = _load_release_model(Path(args.weights), device=device, dtype=dtype)
+    weights = resolve_existing_or_rooted(Path(args.weights), paths.weights_root)
+    model, tokenizer, cfg = _load_release_model(weights, device=device, dtype=dtype)
     feature_key = str(args.feature_key or cfg.get("feature_key", "conch_v15"))
 
     features: list[np.ndarray] = []
@@ -138,7 +153,8 @@ def main() -> None:
     kept_paths: list[str] = []
     remaining = int(args.max_vision_tokens)
     for path in args.embeddings:
-        arr = _read_h5_features(Path(path), feature_key)
+        resolved_path = resolve_existing_or_rooted(Path(path), Path(args.embedding_root))
+        arr = _read_h5_features(resolved_path, feature_key)
         if int(args.max_vision_tokens) > 0:
             if remaining <= 0:
                 break
@@ -148,7 +164,7 @@ def main() -> None:
             continue
         features.append(arr)
         counts.append(int(arr.shape[0]))
-        kept_paths.append(str(path))
+        kept_paths.append(str(resolved_path))
 
     if not features:
         raise RuntimeError("No non-empty embedding matrices were loaded.")

@@ -20,7 +20,7 @@ If `/features` contains exactly one dataset, the loaders can fall back to that d
 ## Expected Layout
 
 ```text
-data/embeddings/
+$PATHOSYNVLM_EMBEDDINGS_ROOT/
   HistGen-train/conch_v15/5x_512/patches/*.h5
   HistGen-val/conch_v15/5x_512/patches/*.h5
   HistGen-test/conch_v15/5x_512/patches/*.h5
@@ -30,6 +30,8 @@ data/embeddings/
   HISTAI-skin-b2/conch_v15/5x_512/patches/*.h5
   HISTAI-*/conch_v15/5x_512/patches/*.h5
 ```
+
+If your embeddings already live outside the repository, point `PATHOSYNVLM_EMBEDDINGS_ROOT` to that directory. The scripts also accept `--dataset-embeddings-root` for metadata preparation, training, and evaluation, and `--embedding-root` for case-report inference.
 
 ## Feature Extraction
 
@@ -47,8 +49,8 @@ Sanity check a HistAI batch without loading the LLM:
 
 ```bash
 python pathosynvlm/histai_dataset.py \
-  --metadata-standardized-json data/histai/standardized_metadata_fixed_filtered_5x_512.json \
-  --dataset-embeddings-root data/embeddings \
+  --metadata-standardized-json "$PATHOSYNVLM_HISTAI_METADATA_DIR/standardized_metadata_fixed_filtered_5x_512.json" \
+  --dataset-embeddings-root "$PATHOSYNVLM_EMBEDDINGS_ROOT" \
   --feature-key conch_v15 \
   --patch-level 5x_512 \
   --no-tokenizer \

@@ -5,9 +5,9 @@ HistAI all-domain dataset loader for finetuning.
 
 Key features:
 - Scans all HISTAI embedding folders under:
-  data/embeddings/HISTAI-*/<feature>/<patch>/patches
+  <dataset_embeddings_root>/HISTAI-*/<feature>/<patch>/patches
 - Uses standardized metadata only:
-  - data/histai/standardized_metadata_fixed_filtered_5x_512.json
+  - standardized_metadata_fixed_filtered_5x_512.json
 - Matches records to embeddings by canonical case key: (group, case_number)
 - Supports robust h5 probing/filtering so unreadable files are excluded
 - Builds chat-template-supervised inputs in the target output format:

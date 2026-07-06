@@ -1,8 +1,8 @@
 {
   "description": "Stage 2 WSI marker ablation settings reported in the paper.",
   "common_args": {
-    "metadata_standardized_json": "data/histai/standardized_metadata_fixed_filtered_5x_512.json",
-    "dataset_embeddings_root": "data/embeddings",
+    "metadata_standardized_json": "$PATHOSYNVLM_HISTAI_METADATA_DIR/standardized_metadata_fixed_filtered_5x_512.json",
+    "dataset_embeddings_root": "$PATHOSYNVLM_EMBEDDINGS_ROOT",
     "feature_key": "conch_v15",
     "patch_level": "5x_512",
     "val_size": "0.2",
@@ -10,7 +10,7 @@
     "max_text_length": 512,
     "max_vision_tokens": 4096,
     "prompt_style": "single",
-    "aligner_init": "runs/stage1_alignment/best_aligner_weights.pt",
+    "aligner_init": "$PATHOSYNVLM_RUNS_ROOT/stage1_alignment/best_aligner_weights.pt",
     "epochs": 20,
     "batch_size": 1,
     "grad_accum": 8,

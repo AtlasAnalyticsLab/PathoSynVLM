@@ -6,7 +6,7 @@ The intended user experience is:
 
 1. The trained Stage 2 model is exported once into the inference layout below.
 2. The exported directory is hosted through Hugging Face, GitHub Releases, institutional storage, or another artifact host.
-3. Users download the exported directory into `weights/pathosynvlm-stage2-main/`.
+3. Users download the exported directory into `$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main/`.
 4. Users run inference or evaluation directly from those weights.
 
 Users should **not** need to train the model just to generate a report, as long as the released weights are available.
@@ -16,7 +16,7 @@ Users should **not** need to train the model just to generate a report, as long 
 The weight package should have this layout:
 
 ```text
-weights/pathosynvlm-stage2-main/
+$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main/
   config.json
   vlm_state.pt
   tokenizer/
@@ -30,11 +30,13 @@ After the final Hugging Face repo id is known, download the weights with:
 
 ```bash
 export PATHOSYNVLM_HF_REPO=AtlasAnalyticsLab/pathosynvlm-stage2-main
+source configs/paths.example.env
+
 hf download "$PATHOSYNVLM_HF_REPO" \
-  --local-dir weights/pathosynvlm-stage2-main
+  --local-dir "$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main"
 ```
 
-If the release is hosted somewhere other than Hugging Face, download and unpack it so that `weights/pathosynvlm-stage2-main/config.json` exists.
+If the release is hosted somewhere other than Hugging Face, download and unpack it so that `$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main/config.json` exists.
 
 The prepared Hugging Face upload root is the model repository itself: it contains the real `llm/model.safetensors` and `vlm_state.pt` files, not symlinks or pointer files. See [docs/huggingface_release.md](huggingface_release.md) for the exact upload-root validation steps.
 
@@ -55,8 +57,8 @@ Export command for retraining or packaging a new checkpoint:
 
 ```bash
 python scripts/export_release_weights.py \
-  --run_dir runs/stage2_main \
-  --output_dir weights/pathosynvlm-stage2-main \
+  --run_dir "$PATHOSYNVLM_RUNS_ROOT/stage2_main" \
+  --output_dir "$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main" \
   --overwrite
 ```
 
@@ -75,11 +77,12 @@ The raw trainer state can be large because it may include optimizer and full LLM
 
 ```bash
 python scripts/generate_case_report.py \
-  --weights weights/pathosynvlm-stage2-main \
-  --embeddings data/embeddings/HISTAI-skin-b2/conch_v15/5x_512/patches/example_1.h5 \
-               data/embeddings/HISTAI-skin-b2/conch_v15/5x_512/patches/example_2.h5 \
+  --embeddings HISTAI-skin-b2/conch_v15/5x_512/patches/example_1.h5 \
+               HISTAI-skin-b2/conch_v15/5x_512/patches/example_2.h5 \
   --output_json report.json
 ```
+
+The default `--weights` path is `$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main`, and relative `--embeddings` values are resolved under `$PATHOSYNVLM_EMBEDDINGS_ROOT`. You can also pass absolute file paths.
 
 The output is expected to follow:
 

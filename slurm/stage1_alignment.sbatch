@@ -10,10 +10,15 @@
 set -euo pipefail
 
 cd "${SLURM_SUBMIT_DIR:-$PWD}"
-mkdir -p logs
+
+: "${PATHOSYNVLM_DATA_ROOT:=$PWD/data}"
+: "${PATHOSYNVLM_EMBEDDINGS_ROOT:=$PATHOSYNVLM_DATA_ROOT/embeddings}"
+: "${PATHOSYNVLM_STAGE1_METADATA_DIR:=$PATHOSYNVLM_DATA_ROOT/stage1}"
+: "${PATHOSYNVLM_RUNS_ROOT:=$PWD/runs}"
+export PATHOSYNVLM_DATA_ROOT PATHOSYNVLM_EMBEDDINGS_ROOT PATHOSYNVLM_STAGE1_METADATA_DIR PATHOSYNVLM_RUNS_ROOT
 
 python scripts/train_stage1_alignment.py \
-  --metadata_json data/stage1/merged_metadata_3datasets_filtered_conch_v15.json \
-  --dataset_embeddings_root data/embeddings \
+  --metadata_json "$PATHOSYNVLM_STAGE1_METADATA_DIR/merged_metadata_3datasets_filtered_conch_v15.json" \
+  --dataset_embeddings_root "$PATHOSYNVLM_EMBEDDINGS_ROOT" \
   --datasets histgen,reg_dataset \
-  --output_dir runs/stage1_alignment
+  --output_dir "$PATHOSYNVLM_RUNS_ROOT/stage1_alignment"

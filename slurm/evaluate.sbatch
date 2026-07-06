@@ -10,11 +10,16 @@
 set -euo pipefail
 
 cd "${SLURM_SUBMIT_DIR:-$PWD}"
-mkdir -p logs
+
+: "${PATHOSYNVLM_DATA_ROOT:=$PWD/data}"
+: "${PATHOSYNVLM_EMBEDDINGS_ROOT:=$PATHOSYNVLM_DATA_ROOT/embeddings}"
+: "${PATHOSYNVLM_HISTAI_METADATA_DIR:=$PATHOSYNVLM_DATA_ROOT/histai}"
+: "${PATHOSYNVLM_RUNS_ROOT:=$PWD/runs}"
+export PATHOSYNVLM_DATA_ROOT PATHOSYNVLM_EMBEDDINGS_ROOT PATHOSYNVLM_HISTAI_METADATA_DIR PATHOSYNVLM_RUNS_ROOT
 
 python scripts/evaluate_checkpoint.py \
-  --finetune_run_dir runs/stage2_main \
+  --finetune_run_dir "$PATHOSYNVLM_RUNS_ROOT/stage2_main" \
   --dataset_scope histai \
-  --histai_metadata_standardized_json data/histai/standardized_metadata_fixed_filtered_5x_512.json \
-  --dataset_embeddings_root data/embeddings \
-  --output_json runs/stage2_main/eval_histai.json
+  --histai_metadata_standardized_json "$PATHOSYNVLM_HISTAI_METADATA_DIR/standardized_metadata_fixed_filtered_5x_512.json" \
+  --dataset_embeddings_root "$PATHOSYNVLM_EMBEDDINGS_ROOT" \
+  --output_json "$PATHOSYNVLM_RUNS_ROOT/stage2_main/eval_histai.json"
