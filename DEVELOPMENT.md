@@ -115,7 +115,7 @@ Scientific content should not drift independently of the paper and code.
 
 When a paper version changes, compare the title, authors, abstract, venue, citation, claims, figures, and metrics before editing the page. Use the paper's wording for scientific claims; do not infer stronger claims from a single metric or qualitative example.
 
-The hero intentionally presents only the Paper, Code, and arXiv HTML links. Keep venue-acceptance messaging and a separate reproduction button off the public hero; the Quick Start section already links to the maintained paper pipeline.
+The hero intentionally presents only the Paper and Code links. Keep duplicate paper-format links, venue-acceptance messaging, and a separate reproduction button off the public hero; the Quick Start section already links to the maintained paper pipeline.
 
 The public page omits a model button because the documented Hugging Face endpoint is not accessible without authentication. Add the button only after an unauthenticated request reaches the intended public model page.
 
