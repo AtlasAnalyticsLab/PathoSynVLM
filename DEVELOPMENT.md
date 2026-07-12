@@ -46,7 +46,7 @@ Do not choose **Deploy from a branch** while the custom workflow is in use. That
 After the workflow succeeds and the URL returns HTTP 200:
 
 1. Set the repository **About → Website** field to `https://atlasanalyticslab.github.io/PathoSynVLM/`.
-2. Add the project-page badge/link and launch note to the `main` README.
+2. Confirm the prepared project-page badge/link on `main` resolves correctly; add a launch note if desired.
 3. Consider protecting `gh-pages`: require a pull request and the **Validate static site** check, while allowing the Pages workflow to deploy.
 
 The custom workflow lives only on `gh-pages`, so GitHub's normal manual **Run workflow** control is not promised. Automatic push deployment and the **Re-run jobs** control on an existing run are supported.
@@ -70,7 +70,7 @@ Use this to keep code and website working directories side by side without mixin
 
 ```bash
 cd PathoSynVLM
-git fetch origin gh-pages
+git fetch origin refs/heads/gh-pages:refs/remotes/origin/gh-pages
 git worktree add -b gh-pages ../PathoSynVLM-website origin/gh-pages
 cd ../PathoSynVLM-website
 ```
@@ -133,6 +133,8 @@ Scientific content should not drift independently of the paper and code.
 When a paper version changes, compare the title, authors, abstract, venue, citation, claims, and metrics before editing the page. Use the paper's wording for scientific claims; do not infer stronger claims from a single metric.
 
 The public page currently omits a model button because the documented Hugging Face endpoint is not accessible without authentication. Add the button only after an unauthenticated request reaches the intended public model page. Remove the release note at the same time.
+
+Before the first public launch, the authors must also confirm the exact Stage 2 release configuration. Paper Table 3's headline values (`0.2495/0.1988/0.0525/0.3018`) reappear as the B1 prompt-repetition setting in Table 7, while Tables 11–12 report WSI-marker variants separately. The current `main/configs/stage2_main_paper.json` enables both prompt repetition and WSI markers. Do not relabel a marker result or change that config based on inference; reconcile the paper, config, and website with the experiment owner.
 
 ## 6. URL and asset rules
 
@@ -203,6 +205,7 @@ Before announcing a new website version:
 - [ ] Keyboard navigation, the menu, copy button, and figure links work.
 - [ ] Paper, code, documentation, and citation links reach the intended public resources.
 - [ ] Scientific claims and metrics match their sources of truth.
+- [ ] The experiment owner has confirmed the Stage 2 headline configuration and reconciled the paper/config labels.
 - [ ] The latest `gh-pages` commit matches the successful deployment SHA.
 - [ ] <https://atlasanalyticslab.github.io/PathoSynVLM/> returns HTTP 200.
 - [ ] The browser console contains no site-owned errors.

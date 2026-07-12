@@ -9,7 +9,7 @@ This orphan `gh-pages` branch contains the project website for [PathoSynVLM](htt
 - Research code: <https://github.com/AtlasAnalyticsLab/PathoSynVLM/tree/main>
 - Maintainer guide: [DEVELOPMENT.md](DEVELOPMENT.md)
 
-Keeping the histories separate means a normal clone of the default `main` branch contains only the Python project. Website maintainers can clone this branch alone or attach it as a second Git worktree.
+Keeping the histories separate means the default `main` working tree contains only the Python project. A standard multi-branch clone may still fetch the `gh-pages` Git objects; use the single-branch command below when transfer-level isolation matters. Website maintainers can clone this branch alone or attach it as a second Git worktree.
 
 ## Repository layout
 
