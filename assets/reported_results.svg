@@ -1,76 +1,121 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="560" viewBox="0 0 1280 560" role="img" aria-labelledby="title desc">
-  <title id="title">PathoSynVLM reported metrics</title>
-  <desc id="desc">Headline Stage 1 and Stage 2 metrics reported for PathoSynVLM.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="680" viewBox="0 0 1400 680" role="img" aria-labelledby="title desc">
+  <title id="title">PathoSynVLM reported results</title>
+  <desc id="desc">Stage 1 visual-language alignment and Stage 2 HISTAI case-level report generation metrics. All bars share a zero-to-one scale and exact values appear in separate labels.</desc>
   <defs>
-    <filter id="softShadow" x="-8%" y="-8%" width="116%" height="116%">
-      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#0f172a" flood-opacity="0.12"/>
+    <filter id="shadow" x="-8%" y="-8%" width="116%" height="125%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#17212b" flood-opacity="0.10"/>
     </filter>
+    <style>
+      .sans { font-family: Arial, Helvetica, sans-serif; }
+      .eyebrow { font-size: 14px; font-weight: 700; fill: #0e8a9c; }
+      .title { font-size: 34px; font-weight: 700; fill: #17212b; }
+      .subtitle { font-size: 17px; fill: #5c626b; }
+      .panel-title { font-size: 24px; font-weight: 700; fill: #ffffff; }
+      .panel-subtitle { font-size: 15px; fill: #d8ecf4; }
+      .group { font-size: 13px; font-weight: 700; fill: #68727d; }
+      .metric { font-size: 16px; font-weight: 700; fill: #26313d; }
+      .value { font-size: 15px; font-weight: 700; fill: #17212b; }
+      .note { font-size: 14px; fill: #68727d; }
+    </style>
   </defs>
 
-  <rect width="1280" height="560" rx="28" fill="#f8fafc"/>
-  <rect x="28" y="28" width="1224" height="504" rx="24" fill="#ffffff" stroke="#dbe4ee"/>
+  <rect width="1400" height="680" fill="#f7fafc"/>
+  <g class="sans">
+    <text x="60" y="45" class="eyebrow">PATHOSYNVLM</text>
+    <text x="60" y="82" class="title">Reported Results</text>
+    <text x="60" y="109" class="subtitle">Headline paper metrics. Every bar uses the same 0-1 scale; exact values sit in a dedicated column.</text>
 
-  <g font-family="Inter, Segoe UI, Arial, sans-serif">
-    <text x="72" y="82" font-size="34" font-weight="800" fill="#0f172a">Reported Results</text>
-    <text x="72" y="113" font-size="17" fill="#475569">Main values from the paper. BLEU is shown in paper scale, not sacreBLEU percentage.</text>
+    <g filter="url(#shadow)">
+      <rect x="60" y="140" width="590" height="470" rx="8" fill="#ffffff" stroke="#d6dee7"/>
+      <path d="M68 140h574a8 8 0 0 1 8 8v82H60v-82a8 8 0 0 1 8-8Z" fill="#0b315b"/>
+    </g>
+    <text x="95" y="181" class="panel-title">Stage 1 &#183; VL alignment</text>
+    <text x="95" y="209" class="panel-subtitle">HistGen + REG2025 &#183; trainable projector only</text>
+    <text x="95" y="259" class="group">TEXT GENERATION</text>
 
-    <rect x="72" y="150" width="535" height="318" rx="18" fill="#f8fafc" stroke="#dbe4ee" filter="url(#softShadow)"/>
-    <text x="108" y="198" font-size="23" font-weight="800" fill="#0f172a">Stage 1 Alignment</text>
-    <text x="108" y="224" font-size="14" fill="#64748b">HistGen + REG2025, aligner-only training</text>
+    <g>
+      <text x="95" y="302" class="metric">ROUGE-L</text>
+      <rect x="270" y="286" width="240" height="14" rx="7" fill="#e5f3f6"/>
+      <rect x="270" y="286" width="114" height="14" rx="7" fill="#0e8a9c"/>
+      <rect x="535" y="275" width="80" height="34" rx="6" fill="#ffffff" stroke="#bfcbd6"/>
+      <text x="575" y="298" text-anchor="middle" class="value">0.4743</text>
 
-    <g font-size="16" fill="#0f172a">
-      <text x="108" y="276" font-weight="700">ROUGE-L</text>
-      <rect x="250" y="257" width="260" height="22" rx="11" fill="#dbeafe"/>
-      <rect x="250" y="257" width="247" height="22" rx="11" fill="#2563eb"/>
-      <text x="528" y="276" text-anchor="end" font-weight="800">0.4743</text>
+      <text x="95" y="370" class="metric">METEOR</text>
+      <rect x="270" y="354" width="240" height="14" rx="7" fill="#e5f3f6"/>
+      <rect x="270" y="354" width="115" height="14" rx="7" fill="#0e8a9c"/>
+      <rect x="535" y="343" width="80" height="34" rx="6" fill="#ffffff" stroke="#bfcbd6"/>
+      <text x="575" y="366" text-anchor="middle" class="value">0.4810</text>
 
-      <text x="108" y="326" font-weight="700">METEOR</text>
-      <rect x="250" y="307" width="260" height="22" rx="11" fill="#dcfce7"/>
-      <rect x="250" y="307" width="250" height="22" rx="11" fill="#16a34a"/>
-      <text x="528" y="326" text-anchor="end" font-weight="800">0.4810</text>
+      <text x="95" y="438" class="metric">BLEU-4</text>
+      <rect x="270" y="422" width="240" height="14" rx="7" fill="#e5f3f6"/>
+      <rect x="270" y="422" width="30" height="14" rx="7" fill="#0e8a9c"/>
+      <rect x="535" y="411" width="80" height="34" rx="6" fill="#ffffff" stroke="#bfcbd6"/>
+      <text x="575" y="434" text-anchor="middle" class="value">0.1247</text>
 
-      <text x="108" y="376" font-weight="700">BLEU-4</text>
-      <rect x="250" y="357" width="260" height="22" rx="11" fill="#ffedd5"/>
-      <rect x="250" y="357" width="65" height="22" rx="11" fill="#ea580c"/>
-      <text x="528" y="376" text-anchor="end" font-weight="800">0.1247</text>
-
-      <text x="108" y="426" font-weight="700">BERTScore F1</text>
-      <rect x="250" y="407" width="260" height="22" rx="11" fill="#f3e8ff"/>
-      <rect x="250" y="407" width="221" height="22" rx="11" fill="#9333ea"/>
-      <text x="528" y="426" text-anchor="end" font-weight="800">0.4253</text>
+      <text x="95" y="506" class="metric">BERTScore F1</text>
+      <rect x="270" y="490" width="240" height="14" rx="7" fill="#e5f3f6"/>
+      <rect x="270" y="490" width="102" height="14" rx="7" fill="#0e8a9c"/>
+      <rect x="535" y="479" width="80" height="34" rx="6" fill="#ffffff" stroke="#bfcbd6"/>
+      <text x="575" y="502" text-anchor="middle" class="value">0.4253</text>
     </g>
 
-    <rect x="673" y="150" width="535" height="318" rx="18" fill="#f8fafc" stroke="#dbe4ee" filter="url(#softShadow)"/>
-    <text x="709" y="198" font-size="23" font-weight="800" fill="#0f172a">Stage 2 HISTAI</text>
-    <text x="709" y="224" font-size="14" fill="#64748b">Case-level structured report generation</text>
+    <g filter="url(#shadow)">
+      <rect x="690" y="140" width="650" height="470" rx="8" fill="#ffffff" stroke="#d6dee7"/>
+      <path d="M698 140h634a8 8 0 0 1 8 8v82H690v-82a8 8 0 0 1 8-8Z" fill="#164f83"/>
+    </g>
+    <text x="725" y="181" class="panel-title">Stage 2 &#183; HISTAI</text>
+    <text x="725" y="209" class="panel-subtitle">Case-level structured report generation</text>
+    <text x="725" y="254" class="group">TEXT GENERATION</text>
 
-    <g font-size="16" fill="#0f172a">
-      <text x="709" y="270" font-weight="700">ROUGE-L</text>
-      <rect x="875" y="251" width="220" height="20" rx="10" fill="#dbeafe"/>
-      <rect x="875" y="251" width="110" height="20" rx="10" fill="#2563eb"/>
-      <text x="1128" y="270" text-anchor="end" font-weight="800">0.2495</text>
+    <g>
+      <text x="725" y="286" class="metric">ROUGE-L</text>
+      <rect x="960" y="273" width="220" height="12" rx="6" fill="#e5f3f6"/>
+      <rect x="960" y="273" width="55" height="12" rx="6" fill="#0e8a9c"/>
+      <rect x="1210" y="262" width="94" height="32" rx="6" fill="#ffffff" stroke="#bfcbd6"/>
+      <text x="1257" y="284" text-anchor="middle" class="value">0.2495</text>
 
-      <text x="709" y="312" font-weight="700">METEOR</text>
-      <rect x="875" y="293" width="220" height="20" rx="10" fill="#dcfce7"/>
-      <rect x="875" y="293" width="88" height="20" rx="10" fill="#16a34a"/>
-      <text x="1128" y="312" text-anchor="end" font-weight="800">0.1988</text>
+      <text x="725" y="326" class="metric">METEOR</text>
+      <rect x="960" y="313" width="220" height="12" rx="6" fill="#e5f3f6"/>
+      <rect x="960" y="313" width="44" height="12" rx="6" fill="#0e8a9c"/>
+      <rect x="1210" y="302" width="94" height="32" rx="6" fill="#ffffff" stroke="#bfcbd6"/>
+      <text x="1257" y="324" text-anchor="middle" class="value">0.1988</text>
 
-      <text x="709" y="354" font-weight="700">BLEU-4</text>
-      <rect x="875" y="335" width="220" height="20" rx="10" fill="#ffedd5"/>
-      <rect x="875" y="335" width="24" height="20" rx="10" fill="#ea580c"/>
-      <text x="1128" y="354" text-anchor="end" font-weight="800">0.0525</text>
+      <text x="725" y="366" class="metric">BLEU-4</text>
+      <rect x="960" y="353" width="220" height="12" rx="6" fill="#e5f3f6"/>
+      <rect x="960" y="353" width="12" height="12" rx="6" fill="#0e8a9c"/>
+      <rect x="1210" y="342" width="94" height="32" rx="6" fill="#ffffff" stroke="#bfcbd6"/>
+      <text x="1257" y="364" text-anchor="middle" class="value">0.0525</text>
 
-      <text x="709" y="396" font-weight="700">Diagnosis relaxed</text>
-      <rect x="875" y="377" width="220" height="20" rx="10" fill="#ffe4e6"/>
-      <rect x="875" y="377" width="147" height="20" rx="10" fill="#e11d48"/>
-      <text x="1128" y="396" text-anchor="end" font-weight="800">0.3333</text>
-
-      <text x="709" y="438" font-weight="700">Certainty</text>
-      <rect x="875" y="419" width="220" height="20" rx="10" fill="#f3e8ff"/>
-      <rect x="875" y="419" width="198" height="20" rx="10" fill="#9333ea"/>
-      <text x="1128" y="438" text-anchor="end" font-weight="800">0.9000</text>
+      <text x="725" y="406" class="metric">BERTScore F1</text>
+      <rect x="960" y="393" width="220" height="12" rx="6" fill="#e5f3f6"/>
+      <rect x="960" y="393" width="66" height="12" rx="6" fill="#0e8a9c"/>
+      <rect x="1210" y="382" width="94" height="32" rx="6" fill="#ffffff" stroke="#bfcbd6"/>
+      <text x="1257" y="404" text-anchor="middle" class="value">0.3018</text>
     </g>
 
-    <text x="72" y="510" font-size="13" fill="#64748b">Values are also stored in configs/reported_results.json for script-based comparison.</text>
+    <line x1="725" y1="432" x2="1305" y2="432" stroke="#e0e6ec"/>
+    <text x="725" y="458" class="group">FIELD ACCURACY</text>
+
+    <g>
+      <text x="725" y="490" class="metric">Diagnosis &#183; exact</text>
+      <rect x="960" y="477" width="220" height="12" rx="6" fill="#e7f3eb"/>
+      <rect x="960" y="477" width="37" height="12" rx="6" fill="#3a9e5b"/>
+      <rect x="1210" y="466" width="94" height="32" rx="6" fill="#ffffff" stroke="#bfcbd6"/>
+      <text x="1257" y="488" text-anchor="middle" class="value">0.1667</text>
+
+      <text x="725" y="530" class="metric">Diagnosis &#183; relaxed</text>
+      <rect x="960" y="517" width="220" height="12" rx="6" fill="#e7f3eb"/>
+      <rect x="960" y="517" width="73" height="12" rx="6" fill="#3a9e5b"/>
+      <rect x="1210" y="506" width="94" height="32" rx="6" fill="#ffffff" stroke="#bfcbd6"/>
+      <text x="1257" y="528" text-anchor="middle" class="value">0.3333</text>
+
+      <text x="725" y="570" class="metric">Certainty &#183; exact</text>
+      <rect x="960" y="557" width="220" height="12" rx="6" fill="#e7f3eb"/>
+      <rect x="960" y="557" width="198" height="12" rx="6" fill="#3a9e5b"/>
+      <rect x="1210" y="546" width="94" height="32" rx="6" fill="#ffffff" stroke="#bfcbd6"/>
+      <text x="1257" y="568" text-anchor="middle" class="value">0.9000</text>
+    </g>
+
+    <text x="60" y="648" class="note">BLEU-4 is shown on the paper's 0-1 scale. Exact values are stored in configs/reported_results.json.</text>
   </g>
 </svg>

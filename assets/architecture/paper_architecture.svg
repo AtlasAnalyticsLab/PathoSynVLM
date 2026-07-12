@@ -1,0 +1,209 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="2000" height="1080" viewBox="0 0 2000 1080" role="img" aria-labelledby="title desc">
+  <title id="title">PathoSynVLM two-stage architecture</title>
+  <desc id="desc">Stage 1 aligns frozen pathology features with a frozen language model through a trainable projector. Stage 2 trains the projector and language model for case-level report generation from multiple whole-slide images separated by learned WSI markers.</desc>
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="125%" height="135%">
+      <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#17212b" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#40454b"/>
+    </marker>
+    <symbol id="snowflake" viewBox="0 0 40 40">
+      <g fill="none" stroke="#1b9eb5" stroke-width="3.3" stroke-linecap="round">
+        <path d="M20 3v34M5.3 11.5l29.4 17M5.3 28.5l29.4-17"/>
+        <path d="M20 3l-4 5M20 3l4 5M20 37l-4-5M20 37l4-5"/>
+        <path d="M5.3 11.5l6.4.8M5.3 11.5l2.5 5.9M34.7 28.5l-6.4-.8M34.7 28.5l-2.5-5.9"/>
+        <path d="M5.3 28.5l2.5-5.9M5.3 28.5l6.4-.8M34.7 11.5l-2.5 5.9M34.7 11.5l-6.4.8"/>
+      </g>
+    </symbol>
+    <symbol id="flame" viewBox="0 0 40 48">
+      <path d="M22 2c1 10 11 13 13 25 2 11-5 19-15 19S3 38 5 27c1-8 7-13 12-20 0 7 2 10 5 13 2-5 2-11 0-18Z" fill="#f05a24"/>
+      <path d="M21 22c1 5 6 7 6 13 0 5-3 9-8 9s-8-4-7-9c0-4 3-7 6-11 0 4 1 6 3 8 1-3 1-7 0-10Z" fill="#f9c642"/>
+    </symbol>
+    <linearGradient id="header" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0b315b"/>
+      <stop offset="1" stop-color="#164f83"/>
+    </linearGradient>
+    <style>
+      .sans { font-family: Arial, Helvetica, sans-serif; }
+      .stage { font-size: 34px; font-weight: 700; fill: #ffffff; }
+      .stage-kicker { font-size: 16px; font-weight: 700; fill: #bfe4f1; }
+      .model { font-size: 33px; font-weight: 700; fill: #17212b; }
+      .block-title { font-size: 25px; font-weight: 700; fill: #17212b; }
+      .block-subtitle { font-size: 18px; fill: #5c626b; }
+      .status { font-size: 16px; font-weight: 700; letter-spacing: 0; }
+      .source-label { font-size: 25px; font-weight: 700; fill: #17212b; }
+      .wsi-label { font-size: 15px; font-weight: 700; fill: #5c626b; }
+      .connector { fill: none; stroke: #40454b; stroke-width: 4; marker-end: url(#arrow); }
+      .panel { fill: #ffffff; stroke-width: 3; filter: url(#shadow); }
+      .token { stroke-width: 2; }
+    </style>
+  </defs>
+
+  <rect width="2000" height="1080" fill="#ffffff"/>
+  <line x1="1000" y1="28" x2="1000" y2="1042" stroke="#a6a6a6" stroke-width="4" stroke-dasharray="18 16"/>
+
+  <g class="sans">
+    <g>
+      <rect x="80" y="32" width="820" height="68" rx="10" fill="url(#header)"/>
+      <text x="112" y="59" class="stage-kicker">STAGE 1</text>
+      <text x="112" y="88" class="stage">Visual-language alignment</text>
+    </g>
+    <g>
+      <rect x="1100" y="32" width="820" height="68" rx="10" fill="url(#header)"/>
+      <text x="1132" y="59" class="stage-kicker">STAGE 2</text>
+      <text x="1132" y="88" class="stage">Case-level report generation</text>
+    </g>
+
+    <g>
+      <rect x="120" y="145" width="760" height="112" rx="14" class="panel" stroke="#3a9e5b"/>
+      <use xlink:href="#snowflake" x="151" y="177" width="48" height="48"/>
+      <text x="500" y="213" text-anchor="middle" class="model">Qwen2.5-3B-Instruct</text>
+      <text x="820" y="208" text-anchor="end" class="status" fill="#0a6a78">FROZEN</text>
+    </g>
+    <g>
+      <rect x="1120" y="145" width="760" height="112" rx="14" class="panel" stroke="#3a9e5b"/>
+      <use xlink:href="#flame" x="1152" y="176" width="42" height="50"/>
+      <text x="1500" y="213" text-anchor="middle" class="model">Qwen2.5-3B-Instruct</text>
+      <text x="1820" y="208" text-anchor="end" class="status" fill="#a94b10">TRAINABLE</text>
+    </g>
+
+    <path d="M325 325V268" class="connector"/>
+    <path d="M795 325V268" class="connector"/>
+    <path d="M1325 325V268" class="connector"/>
+    <path d="M1805 325V268" class="connector"/>
+
+    <g>
+      <rect x="55" y="325" width="540" height="166" rx="12" class="panel" stroke="#0e8a9c"/>
+      <text x="325" y="365" text-anchor="middle" class="block-title">Visual tokens</text>
+      <g transform="translate(132 404)">
+        <rect x="0" y="0" width="42" height="42" rx="7" fill="#4a90e2" stroke="#2765b6" class="token"/>
+        <rect x="56" y="0" width="42" height="42" rx="7" fill="#45c8df" stroke="#0e8a9c" class="token"/>
+        <rect x="112" y="0" width="42" height="42" rx="7" fill="#4a90e2" stroke="#2765b6" class="token"/>
+        <text x="184" y="33" text-anchor="middle" font-size="34" font-weight="700" fill="#40454b">...</text>
+        <rect x="222" y="0" width="42" height="42" rx="7" fill="#4a90e2" stroke="#2765b6" class="token"/>
+        <rect x="278" y="0" width="42" height="42" rx="7" fill="#45c8df" stroke="#0e8a9c" class="token"/>
+        <rect x="334" y="0" width="42" height="42" rx="7" fill="#4a90e2" stroke="#2765b6" class="token"/>
+      </g>
+    </g>
+    <g>
+      <rect x="650" y="325" width="290" height="166" rx="12" class="panel" stroke="#c0394b"/>
+      <text x="795" y="365" text-anchor="middle" class="block-title">Text tokens</text>
+      <g transform="translate(681 407)">
+        <rect x="0" y="0" width="38" height="38" rx="7" fill="#e43b45" stroke="#b51f2c" class="token"/>
+        <rect x="49" y="0" width="38" height="38" rx="7" fill="#e43b45" stroke="#b51f2c" class="token"/>
+        <rect x="98" y="0" width="38" height="38" rx="7" fill="#e43b45" stroke="#b51f2c" class="token"/>
+        <rect x="147" y="0" width="38" height="38" rx="7" fill="#e43b45" stroke="#b51f2c" class="token"/>
+        <text x="222" y="31" text-anchor="middle" font-size="32" font-weight="700" fill="#40454b">...</text>
+      </g>
+    </g>
+
+    <g>
+      <rect x="1035" y="325" width="580" height="166" rx="12" class="panel" stroke="#0e8a9c"/>
+      <text x="1325" y="365" text-anchor="middle" class="block-title">Visual tokens + WSI markers</text>
+      <g transform="translate(1087 402)">
+        <rect x="0" y="-2" width="16" height="48" rx="4" fill="#3a9e5b" stroke="#24723e" class="token"/>
+        <rect x="34" y="1" width="42" height="42" rx="7" fill="#4a90e2" stroke="#2765b6" class="token"/>
+        <rect x="90" y="1" width="42" height="42" rx="7" fill="#45c8df" stroke="#0e8a9c" class="token"/>
+        <rect x="146" y="1" width="42" height="42" rx="7" fill="#4a90e2" stroke="#2765b6" class="token"/>
+        <text x="218" y="34" text-anchor="middle" font-size="34" font-weight="700" fill="#40454b">...</text>
+        <rect x="250" y="-2" width="16" height="48" rx="4" fill="#3a9e5b" stroke="#24723e" class="token"/>
+        <rect x="284" y="1" width="42" height="42" rx="7" fill="#4a90e2" stroke="#2765b6" class="token"/>
+        <rect x="340" y="1" width="42" height="42" rx="7" fill="#45c8df" stroke="#0e8a9c" class="token"/>
+        <rect x="396" y="1" width="42" height="42" rx="7" fill="#4a90e2" stroke="#2765b6" class="token"/>
+        <text x="472" y="34" text-anchor="middle" font-size="34" font-weight="700" fill="#40454b">...</text>
+      </g>
+    </g>
+    <g>
+      <rect x="1670" y="325" width="270" height="166" rx="12" class="panel" stroke="#c0394b"/>
+      <text x="1805" y="365" text-anchor="middle" class="block-title">Text tokens</text>
+      <g transform="translate(1694 407)">
+        <rect x="0" y="0" width="36" height="38" rx="7" fill="#e43b45" stroke="#b51f2c" class="token"/>
+        <rect x="46" y="0" width="36" height="38" rx="7" fill="#e43b45" stroke="#b51f2c" class="token"/>
+        <rect x="92" y="0" width="36" height="38" rx="7" fill="#e43b45" stroke="#b51f2c" class="token"/>
+        <rect x="138" y="0" width="36" height="38" rx="7" fill="#e43b45" stroke="#b51f2c" class="token"/>
+        <text x="214" y="31" text-anchor="middle" font-size="32" font-weight="700" fill="#40454b">...</text>
+      </g>
+    </g>
+
+    <path d="M325 550V502" class="connector"/>
+    <path d="M795 710V502" class="connector"/>
+    <path d="M1325 550V502" class="connector"/>
+    <path d="M1805 710V502" class="connector"/>
+
+    <g>
+      <rect x="155" y="550" width="340" height="98" rx="12" class="panel" stroke="#c1741a" fill="#fffaf3"/>
+      <use xlink:href="#flame" x="184" y="574" width="38" height="46"/>
+      <text x="335" y="591" text-anchor="middle" class="block-title">VL Projector</text>
+      <text x="335" y="620" text-anchor="middle" class="block-subtitle">2-layer MLP</text>
+    </g>
+    <g>
+      <rect x="1155" y="550" width="340" height="98" rx="12" class="panel" stroke="#c1741a" fill="#fffaf3"/>
+      <use xlink:href="#flame" x="1184" y="574" width="38" height="46"/>
+      <text x="1335" y="591" text-anchor="middle" class="block-title">VL Projector</text>
+      <text x="1335" y="620" text-anchor="middle" class="block-subtitle">2-layer MLP</text>
+    </g>
+
+    <path d="M325 710V659" class="connector"/>
+    <path d="M1325 710V659" class="connector"/>
+
+    <g>
+      <rect x="135" y="710" width="380" height="112" rx="12" class="panel" stroke="#1b9eb5" fill="#f7fcfd"/>
+      <use xlink:href="#snowflake" x="166" y="743" width="48" height="48"/>
+      <text x="344" y="753" text-anchor="middle" class="block-title">Patch Encoder</text>
+      <text x="344" y="785" text-anchor="middle" class="block-subtitle">CONCH v1.5</text>
+      <text x="480" y="772" text-anchor="end" class="status" fill="#0a6a78">FROZEN</text>
+    </g>
+    <g>
+      <rect x="685" y="710" width="220" height="112" rx="12" class="panel" stroke="#8a6dc7"/>
+      <rect x="700" y="741" width="36" height="45" rx="4" fill="#7c4fd1"/>
+      <path d="M709 753h18M709 763h18M709 773h13" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+      <text x="825" y="775" text-anchor="middle" class="block-title">Text prompt</text>
+    </g>
+    <g>
+      <rect x="1135" y="710" width="380" height="112" rx="12" class="panel" stroke="#1b9eb5" fill="#f7fcfd"/>
+      <use xlink:href="#snowflake" x="1166" y="743" width="48" height="48"/>
+      <text x="1344" y="753" text-anchor="middle" class="block-title">Patch Encoder</text>
+      <text x="1344" y="785" text-anchor="middle" class="block-subtitle">CONCH v1.5</text>
+      <text x="1480" y="772" text-anchor="end" class="status" fill="#0a6a78">FROZEN</text>
+    </g>
+    <g>
+      <rect x="1695" y="710" width="220" height="112" rx="12" class="panel" stroke="#8a6dc7"/>
+      <rect x="1710" y="741" width="36" height="45" rx="4" fill="#7c4fd1"/>
+      <path d="M1719 753h18M1719 763h18M1719 773h13" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+      <text x="1835" y="775" text-anchor="middle" class="block-title">Text prompt</text>
+    </g>
+
+    <path d="M325 895V833" class="connector"/>
+    <path d="M1325 895V833" class="connector"/>
+
+    <g>
+      <rect x="75" y="895" width="500" height="135" rx="12" class="panel" stroke="#7c848c"/>
+      <rect x="102" y="914" width="210" height="96" rx="6" fill="#ffffff" stroke="#6f7780" stroke-width="2"/>
+      <image xlink:href="wsi_thumbnail_1.png" x="108" y="920" width="198" height="84" preserveAspectRatio="xMidYMid meet"/>
+      <text x="423" y="968" text-anchor="middle" class="source-label">One WSI</text>
+    </g>
+    <g>
+      <rect x="1040" y="895" width="820" height="135" rx="12" class="panel" stroke="#7c848c"/>
+      <g>
+        <rect x="1068" y="911" width="142" height="82" rx="5" fill="#ffffff" stroke="#6f7780" stroke-width="2"/>
+        <image xlink:href="wsi_thumbnail_1.png" x="1073" y="916" width="132" height="72" preserveAspectRatio="xMidYMid meet"/>
+        <text x="1139" y="1015" text-anchor="middle" class="wsi-label">WSI 1</text>
+      </g>
+      <text x="1229" y="962" text-anchor="middle" font-size="30" font-weight="700" fill="#40454b">...</text>
+      <g>
+        <rect x="1250" y="911" width="142" height="82" rx="5" fill="#ffffff" stroke="#6f7780" stroke-width="2"/>
+        <image xlink:href="wsi_thumbnail_2.png" x="1255" y="916" width="132" height="72" preserveAspectRatio="xMidYMid meet"/>
+        <text x="1321" y="1015" text-anchor="middle" class="wsi-label">WSI 2</text>
+      </g>
+      <text x="1411" y="962" text-anchor="middle" font-size="30" font-weight="700" fill="#40454b">...</text>
+      <g>
+        <rect x="1432" y="911" width="142" height="82" rx="5" fill="#ffffff" stroke="#6f7780" stroke-width="2"/>
+        <image xlink:href="wsi_thumbnail_3.png" x="1437" y="916" width="132" height="72" preserveAspectRatio="xMidYMid meet"/>
+        <text x="1503" y="1015" text-anchor="middle" class="wsi-label">WSI 3</text>
+      </g>
+      <text x="1713" y="954" text-anchor="middle" class="source-label">Multiple WSIs</text>
+      <text x="1713" y="985" text-anchor="middle" class="block-subtitle">per case</text>
+    </g>
+  </g>
+</svg>
