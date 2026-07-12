@@ -150,7 +150,14 @@ Paper Figure 4 labels the Stage 2 total as `43,619` cases and the mixed group as
 - sitemap and robots URL consistency; and
 - the 5 MiB per-file asset budget.
 
-`.github/workflows/validate-site.yml` pins `actions/checkout` to an immutable commit and grants only `contents: read`. It runs on pushes and pull requests targeting `gh-pages`. Deployment itself is owned by GitHub's dynamic `pages build and deployment` workflow generated from the repository Pages setting.
+`.github/workflows/validate-site.yml` defines `PathoSynVLM website checks`, pins `actions/checkout` to an immutable commit, and grants only `contents: read`. It runs on pushes and pull requests targeting `gh-pages`. Deployment itself is owned by GitHub's dynamic `pages build and deployment` workflow generated from the repository Pages setting.
+
+A normal push therefore creates exactly two Actions runs:
+
+1. `PathoSynVLM website checks` — repository-owned validation.
+2. `pages build and deployment` — GitHub-managed publication.
+
+Rows from earlier pushes are completed run history, not additional active workflows. Do not add a second custom Pages deployer while branch publishing is enabled.
 
 When updating the checkout action, verify its release in the official repository, replace the full commit SHA, update the version comment, and review its release notes.
 
@@ -160,6 +167,7 @@ When updating the checkout action, verify its release in the official repository
 |---|---|---|
 | Production shows this branch's README | `index.html` is missing from the published root, or Pages points at the wrong folder | Confirm root `index.html` exists and Pages uses `gh-pages` + `/(root)` |
 | Two workflows deploy different Pages artifacts | A custom deploy workflow is racing branch publishing | Keep the committed workflow validation-only; use only the managed branch deployment |
+| More than two rows appear under All workflows | GitHub is retaining completed run history | Confirm the names above; delete old completed runs only when their audit history is no longer needed |
 | Validation passes but CSS/images are missing | A project-site path was changed to a domain-root path | Restore relative paths and run the validator |
 | Production shows an older revision | The managed Pages run failed or edge caching has not expired | Check the latest `pages build and deployment` run and allow several minutes after success |
 | The model link prompts for authentication | The model repository is private or gated | Keep the public model button absent until release policy changes |

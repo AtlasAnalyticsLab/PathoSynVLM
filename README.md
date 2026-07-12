@@ -55,9 +55,11 @@ To keep one clone and two working directories instead, see the worktree instruct
 
 The repository uses GitHub Pages branch publishing from `gh-pages` and `/(root)`:
 
-1. A pull request or push runs the committed dependency-free site validator.
+1. A pull request or push runs the committed dependency-free `PathoSynVLM website checks` workflow.
 2. GitHub's managed `pages build and deployment` workflow publishes the branch root after each push.
 3. Root `index.html` is served directly; `.nojekyll` prevents README/Jekyll rendering from replacing it.
+
+These are the only two workflows expected for a normal `gh-pages` push. The Actions page keeps completed runs as history, so multiple rows there do not mean that multiple workflow definitions are active.
 
 Website changes therefore remain independent of `main` and deploy automatically when they reach `gh-pages`. Initial setup, rollback, and troubleshooting instructions are in [DEVELOPMENT.md](DEVELOPMENT.md).
 
