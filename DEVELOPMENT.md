@@ -6,7 +6,7 @@ This document is the operational source of truth for the PathoSynVLM project web
 
 The repository has two intentionally independent histories:
 
-| Branch | Purpose | Included in a default clone? | Deployment effect |
+| Branch | Purpose | Checked out in the default working tree? | Deployment effect |
 |---|---|---:|---|
 | `main` | Python package, paper configs, research docs, and code assets | Yes | None |
 | `gh-pages` | Static website, website checks, and this guide | No | A push validates and deploys the site |
