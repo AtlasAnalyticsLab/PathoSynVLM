@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>PathoSynVLM: Case-Level Pathology Report Generation</title>
+    <meta
+      name="description"
+      content="PathoSynVLM is a simple token-efficient vision-language model for case-level pathology synoptic report generation from one or more whole-slide images."
+    >
+    <meta name="author" content="Zhiyuan Yang, Jiahao Cheng, Vincent Quoc-Huy Trinh, Mahdi S. Hosseini">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="canonical" href="https://atlasanalyticslab.github.io/PathoSynVLM/">
+    <link rel="icon" href="static/images/favicon.svg" type="image/svg+xml">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="PathoSynVLM">
+    <meta property="og:title" content="PathoSynVLM: Case-Level Pathology Report Generation">
+    <meta
+      property="og:description"
+      content="A simple token-efficient vision-language model for structured report generation from one or more pathology whole-slide images."
+    >
+    <meta property="og:url" content="https://atlasanalyticslab.github.io/PathoSynVLM/">
+    <meta property="og:image" content="https://atlasanalyticslab.github.io/PathoSynVLM/static/images/architecture.png">
+    <meta property="og:image:width" content="2000">
+    <meta property="og:image:height" content="1080">
+    <meta property="og:image:alt" content="PathoSynVLM two-stage training architecture">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ScholarlyArticle",
+        "headline": "Simple Token-Efficient Vision-Language Model for Case-level Pathology Synoptic Report Generation",
+        "datePublished": "2026-05-29",
+        "author": [
+          {"@type": "Person", "name": "Zhiyuan Yang"},
+          {"@type": "Person", "name": "Jiahao Cheng"},
+          {"@type": "Person", "name": "Vincent Quoc-Huy Trinh"},
+          {"@type": "Person", "name": "Mahdi S. Hosseini"}
+        ],
+        "url": "https://arxiv.org/abs/2605.30716",
+        "mainEntityOfPage": "https://atlasanalyticslab.github.io/PathoSynVLM/",
+        "sameAs": [
+          "https://arxiv.org/abs/2605.30716",
+          "https://github.com/AtlasAnalyticsLab/PathoSynVLM"
+        ],
+        "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+      }
+    </script>
+    <script>document.documentElement.classList.add("js");</script>
+    <link rel="stylesheet" href="static/css/index.css">
+    <script defer src="static/js/index.js"></script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <main id="main-content">
+      <!-- Hero -->
+      <section class="section hero-section">
+        <div class="container hero-container">
+          <h1 class="hero-title">PathoSynVLM</h1>
+          <p class="hero-subtitle">
+            Simple Token-Efficient Vision-Language Model for Case-level Pathology Synoptic Report Generation
+          </p>
+
+          <p class="author-list">
+            <a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Yang%2C+Z">Zhiyuan Yang<sup>*</sup></a>,
+            <a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Cheng%2C+J">Jiahao Cheng<sup>*</sup></a>,
+            <a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Trinh%2C+V+Q">Vincent Quoc-Huy Trinh</a>,
+            <a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Hosseini%2C+M+S">Mahdi S. Hosseini</a>
+          </p>
+          <p class="equal-note"><sup>*</sup> Equal contribution</p>
+          <p class="affiliation-list">
+            CSSE, Concordia University, Montréal, Canada &ensp;·&ensp;
+            Centre de recherche du CHUM, Université de Montréal, Montréal, Canada &ensp;·&ensp;
+            IRIC, Université de Montréal, Montréal, Canada &ensp;·&ensp;
+            Mila – Québec AI Institute, Montréal, Canada
+          </p>
+          <p class="venue-line">
+            <a href="https://arxiv.org/abs/2605.30716">🏆 Accepted at DeLTA 2026</a>
+          </p>
+
+          <nav class="link-row" aria-label="Project links">
+            <a href="https://arxiv.org/abs/2605.30716">📄 Paper</a>
+            <a href="https://github.com/AtlasAnalyticsLab/PathoSynVLM">💻 Code</a>
+            <a href="https://arxiv.org/html/2605.30716v1">🌐 HTML</a>
+            <a href="https://github.com/AtlasAnalyticsLab/PathoSynVLM/blob/main/docs/paper_pipeline.md">🧪 Reproduce</a>
+          </nav>
+        </div>
+      </section>
+
+      <!-- Key numbers -->
+      <section class="stats-section" aria-label="Key project characteristics">
+        <div class="container stat-cards">
+          <div class="stat-card">
+            <span class="stat-number">Up to 64×</span>
+            <span class="stat-label">shorter visual sequences</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">40 GB</span>
+            <span class="stat-label">training VRAM</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">3B</span>
+            <span class="stat-label">Qwen2.5 decoder</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">Multi-WSI</span>
+            <span class="stat-label">case-level generation</span>
+          </div>
+        </div>
+      </section>
+
+      <hr class="section-divider">
+
+      <!-- Quick start -->
+      <section class="section" id="quick-start">
+        <div class="container narrow-container">
+          <h2 class="section-heading">Quick Start</h2>
+          <pre class="code-block" tabindex="0"><code><span class="comment"># clone and install the research code</span>
+git clone https://github.com/AtlasAnalyticsLab/PathoSynVLM
+cd PathoSynVLM
+conda create -n pathosynvlm python=3.11 -y
+conda activate pathosynvlm
+pip install -e .
+
+<span class="comment"># inspect the multi-WSI report-generation entry point</span>
+python scripts/generate_case_report.py --help</code></pre>
+          <p class="center-note">
+            Inference requires prepared CONCHv1.5 H5 embeddings and a local weight package.
+            Follow the <a href="https://github.com/AtlasAnalyticsLab/PathoSynVLM/blob/main/docs/paper_pipeline.md">paper pipeline</a> for data, training, and evaluation.
+          </p>
+        </div>
+      </section>
+
+      <!-- Abstract -->
+      <section class="section section-alt" id="abstract">
+        <div class="container prose-container">
+          <h2 class="section-heading">Abstract</h2>
+          <p class="abstract-text">
+            Generating clinically useful pathology reports for pathology cases from whole-slide images (WSIs) is challenging due to gigapixel resolution, long visual-token sequences, and the complexity of case-level reasoning, where a single case may contain multiple WSIs with heterogeneous tissues and ambiguous findings. We present a simple token-efficient vision–language model for case-level synoptic report generation that remains practical under constrained GPU memory. Our architecture follows a minimal three-component design: a frozen pathology patch encoder, a lightweight two-layer MLP vision-language aligner, and a large language model decoder, with an explicit WSI marker token to separate slides within a case. Training proceeds in two supervised stages: (1) aligner-only WSI captioning using heterogeneous WSI-text pairs, and (2) case-level supervised fine-tuning on case-report pairs for structured report generation. To reduce sequence length, we represent each slide using 512 × 512 patches at 5× magnification, which reduces the average sequence length by up to 64× compared to commonly used 20× patches. Combined with efficient training techniques, we enable practical training with only half an NVIDIA H100 GPU. Across both training stages, our approach achieves high ROUGE-L/METEOR/BLEU-4 scores while being substantially more efficient in memory and runtime. In AI-based evaluations, the model performs strongly against several baselines, while the paper also documents settings where a competing system is preferred. Extensive ablations characterize performance-efficiency trade-offs and identify simple choices that improve robustness in multi-WSI settings. Overall, this work provides a reproducible baseline for efficient pathology report generation, lowering the barrier to multi-WSI VLM research under limited compute.
+          </p>
+        </div>
+      </section>
+
+      <!-- Pipeline -->
+      <section class="section" id="method">
+        <div class="container wide-container">
+          <h2 class="section-heading">Two-Stage Training Pipeline</h2>
+          <figure class="paper-figure">
+            <button
+              class="figure-button"
+              type="button"
+              data-lightbox-src="static/images/architecture.png"
+              data-lightbox-alt="PathoSynVLM two-stage training architecture"
+              aria-label="Open the PathoSynVLM architecture figure at full size"
+            >
+              <img
+                src="static/images/architecture.png"
+                width="2000"
+                height="1080"
+                alt="Stage 1 aligns frozen pathology patch features with a frozen language model through a trainable MLP projector. Stage 2 fine-tunes case-level report generation from multiple whole-slide images."
+                loading="lazy"
+              >
+            </button>
+            <figcaption class="fig-caption">
+              <strong>Stage 1:</strong> a two-layer MLP learns visual-language alignment while the pathology encoder and language model remain frozen.
+              <strong>Stage 2:</strong> the model learns case-level structured generation from one or more WSIs under a constrained visual-token budget.
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- Data -->
+      <section class="section section-alt" id="data">
+        <div class="container wide-container">
+          <h2 class="section-heading">Training Data</h2>
+          <div class="two-column">
+            <figure class="paper-figure">
+              <button
+                class="figure-button"
+                type="button"
+                data-lightbox-src="static/images/training_data.png"
+                data-lightbox-alt="Training data composition across both PathoSynVLM stages"
+                aria-label="Open the training-data composition figure at full size"
+              >
+                <img
+                  src="static/images/training_data.png"
+                  width="2860"
+                  height="1320"
+                  alt="Bar charts showing retained HistGen and REG2025 WSI-text pairs for Stage 1 and retained HISTAI cases by group for Stage 2."
+                  loading="lazy"
+                >
+              </button>
+              <figcaption class="fig-caption">Dataset composition after metadata standardization and integrity filtering.</figcaption>
+            </figure>
+            <div class="column-copy">
+              <p>
+                Stage 1 retains <strong>7,637 HistGen</strong> and <strong>7,378 REG2025</strong> WSI-text pairs for visual-language alignment. Stage 2 uses case-report pairs from HISTAI across mixed and organ-specific groups.
+              </p>
+              <p>
+                The second-stage distribution is intentionally broad but imbalanced, with mixed and skin cases accounting for most retained examples. The public repository documents the preprocessing and deterministic split procedure without redistributing restricted source data.
+              </p>
+              <p class="inline-links">
+                <a href="https://github.com/AtlasAnalyticsLab/PathoSynVLM/blob/main/docs/data.md">Data guide</a>
+                <span aria-hidden="true">·</span>
+                <a href="https://github.com/AtlasAnalyticsLab/PathoSynVLM/blob/main/docs/embeddings.md">Embedding format</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Results -->
+      <section class="section" id="results">
+        <div class="container wide-container">
+          <h2 class="section-heading">Results</h2>
+          <p class="section-intro">
+            Reported paper values are shown directly below. The Stage 2 headline row corresponds to Table 3 and the B1 prompt-repetition setting in Table 7; WSI-marker variants are evaluated separately in the ablation section of the paper.
+          </p>
+
+          <div class="tabs-component">
+            <div class="tabs" role="tablist" aria-label="Result views">
+              <button
+                id="tab-overview"
+                type="button"
+                role="tab"
+                aria-selected="true"
+                aria-controls="panel-overview"
+                tabindex="0"
+                data-tab-target="panel-overview"
+              >Overview</button>
+              <button
+                id="tab-efficiency"
+                type="button"
+                role="tab"
+                aria-selected="false"
+                aria-controls="panel-efficiency"
+                tabindex="-1"
+                data-tab-target="panel-efficiency"
+              >Efficiency</button>
+              <button
+                id="tab-format"
+                type="button"
+                role="tab"
+                aria-selected="false"
+                aria-controls="panel-format"
+                tabindex="-1"
+                data-tab-target="panel-format"
+              >Output format</button>
+            </div>
+
+            <div
+              class="tab-panel is-active"
+              id="panel-overview"
+              role="tabpanel"
+              aria-labelledby="tab-overview"
+              tabindex="0"
+            >
+              <div class="table-scroll" tabindex="0" role="region" aria-label="Headline PathoSynVLM result table">
+                <table class="results-table">
+                  <caption class="sr-only">Headline text-generation and field-level results from paper Table 3</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Stage</th>
+                      <th scope="col">ROUGE-L</th>
+                      <th scope="col">METEOR</th>
+                      <th scope="col">BLEU-4</th>
+                      <th scope="col">BERTScore F1</th>
+                      <th scope="col">Diagnosis exact</th>
+                      <th scope="col">Diagnosis relaxed</th>
+                      <th scope="col">Certainty</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">Stage 1</th>
+                      <td><strong>0.4743</strong></td>
+                      <td><strong>0.4810</strong></td>
+                      <td><strong>0.1247</strong></td>
+                      <td><strong>0.4253</strong></td>
+                      <td>—</td>
+                      <td>—</td>
+                      <td>—</td>
+                    </tr>
+                    <tr class="highlight-row">
+                      <th scope="row">Stage 2</th>
+                      <td><strong>0.2495</strong></td>
+                      <td><strong>0.1988</strong></td>
+                      <td><strong>0.0525</strong></td>
+                      <td><strong>0.3018</strong></td>
+                      <td>0.1667</td>
+                      <td>0.3333</td>
+                      <td>0.9000</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="tab-note">Stage 1 is single-WSI captioning. Stage 2 is case-level structured reporting; overlap metrics are computed on the Conclusion field.</p>
+            </div>
+
+            <div
+              class="tab-panel"
+              id="panel-efficiency"
+              role="tabpanel"
+              aria-labelledby="tab-efficiency"
+              tabindex="0"
+            >
+              <div class="table-scroll" tabindex="0" role="region" aria-label="PathoSynVLM efficiency table">
+                <table class="results-table efficiency-table">
+                  <caption class="sr-only">Stage 1 efficiency under single-WSI inputs from paper Table 4</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Setting</th>
+                      <th scope="col">Patches per input</th>
+                      <th scope="col">Preprocessing seconds</th>
+                      <th scope="col">Inference seconds</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="highlight-row">
+                      <th scope="row">Baseline · 5×</th>
+                      <td><strong>160.04</strong></td>
+                      <td><strong>45.98</strong></td>
+                      <td><strong>1.87</strong></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">20× baseline</th>
+                      <td>12,247.74</td>
+                      <td>196.84</td>
+                      <td>4.62</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="tab-note">Low-magnification patching reduces the visual sequence and the dominant preprocessing cost while retaining practical report generation.</p>
+            </div>
+
+            <div
+              class="tab-panel"
+              id="panel-format"
+              role="tabpanel"
+              aria-labelledby="tab-format"
+              tabindex="0"
+            >
+              <pre class="schema-block" tabindex="0"><code>Diagnosis: ...
+Certainty: ...
+Conclusion: ...</code></pre>
+              <p class="tab-note">The fixed schema supports field-level evaluation while retaining a free-form conclusion for case-level findings.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Qualitative -->
+      <section class="section section-alt" id="qualitative-results">
+        <div class="container wide-container">
+          <h2 class="section-heading">Qualitative Results</h2>
+          <p class="section-intro">
+            Multi-WSI cases are packed into one visual sequence and decoded into the required Diagnosis, Certainty, and Conclusion fields.
+          </p>
+          <figure class="paper-figure">
+            <button
+              class="figure-button"
+              type="button"
+              data-lightbox-src="static/images/case_examples.png"
+              data-lightbox-alt="PathoSynVLM Stage 2 case-level report examples"
+              aria-label="Open the Stage 2 qualitative results figure at full size"
+            >
+              <img
+                src="static/images/case_examples.png"
+                width="5280"
+                height="3322"
+                alt="Three Stage 2 examples showing whole-slide image inputs, ground-truth structured reports, and PathoSynVLM baseline predictions."
+                loading="lazy"
+              >
+            </button>
+            <figcaption class="fig-caption">
+              Stage 2 examples from HISTAI. Each row pairs the input WSI evidence with the reference report and baseline prediction. These examples illustrate both close matches and clinically meaningful omissions or disagreements.
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- Citation -->
+      <section class="section" id="citation">
+        <div class="container narrow-container">
+          <h2 class="section-heading">Citation</h2>
+          <div class="bibtex-block">
+            <button class="copy-btn" type="button" data-copy-citation>Copy</button>
+            <pre role="region" tabindex="0" aria-label="BibTeX citation"><code id="bibtex">@misc{yang2026simpletokenefficientvisionlanguage,
+  title         = {Simple Token-Efficient Vision-Language Model for
+                   Case-level Pathology Synoptic Report Generation},
+  author        = {Zhiyuan Yang and Jiahao Cheng and
+                   Vincent Quoc-Huy Trinh and Mahdi S. Hosseini},
+  year          = {2026},
+  eprint        = {2605.30716},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV},
+  url           = {https://arxiv.org/abs/2605.30716}
+}</code></pre>
+            <p class="copy-status" role="status" aria-live="polite" data-copy-status></p>
+          </div>
+
+          <p class="research-note">
+            <strong>Research use only.</strong> PathoSynVLM is not a clinical diagnostic device. Generated reports may be incorrect or incomplete and must not be used for patient care without appropriate validation, regulatory review, and expert oversight.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-content">
+        <p>
+          PathoSynVLM ·
+          <a href="https://github.com/AtlasAnalyticsLab/PathoSynVLM">Code</a> ·
+          <a href="https://arxiv.org/abs/2605.30716">Paper</a> ·
+          <a href="https://github.com/AtlasAnalyticsLab/PathoSynVLM/blob/main/LICENSE">CC BY-NC-SA 4.0</a>
+        </p>
+      </div>
+    </footer>
+
+    <dialog class="lightbox" id="lightbox" aria-label="Expanded figure">
+      <button class="lightbox-close" type="button" aria-label="Close expanded figure">×</button>
+      <img src="static/images/architecture.png" alt="Expanded PathoSynVLM paper figure">
+    </dialog>
+  </body>
+</html>

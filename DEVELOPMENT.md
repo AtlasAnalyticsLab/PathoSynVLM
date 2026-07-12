@@ -9,47 +9,27 @@ The repository has two intentionally independent histories:
 | Branch | Purpose | Checked out in the default working tree? | Deployment effect |
 |---|---|---:|---|
 | `main` | Python package, paper configs, research docs, and code assets | Yes | None |
-| `gh-pages` | Static website, website checks, and this guide | No | A push validates and deploys the site |
+| `gh-pages` | Static project page, validation, and website maintenance docs | No | A push validates and publishes the branch root |
 
-`gh-pages` is an orphan branch: it has no common ancestor with `main`. Do not merge one branch into the other. Transfer a specific asset or small documentation change by copying it deliberately and recording its source in the commit message.
+`gh-pages` is an orphan branch: it has no common ancestor with `main`. Do not merge one branch into the other. Transfer an approved paper asset or small documentation change deliberately and record its source in the commit message.
 
-Only `site/` is uploaded to GitHub Pages. Repository notes, scripts, and workflow files are not public site artifacts.
+The actual page lives at `index.html` in the `gh-pages` root, matching the MOOZY project-page pattern. This is important: GitHub Pages branch publishing serves the branch root, so putting the page only in a nested `site/` directory causes GitHub to render the branch README instead.
 
-## 2. First-time administrator setup
+## 2. GitHub Pages configuration
 
-These steps are required once, after the local `gh-pages` branch has been reviewed.
-
-### 2.1 Publish the branch
-
-From the website worktree:
-
-```bash
-git push --set-upstream origin gh-pages
-```
-
-The first workflow run can validate the site but its deployment step will fail until Pages is enabled. That is expected.
-
-### 2.2 Enable GitHub Actions as the Pages source
-
-An organization or repository administrator must:
+The intended repository setting is:
 
 1. Open **Settings → Pages** in `AtlasAnalyticsLab/PathoSynVLM`.
-2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
-3. Open **Settings → Environments → github-pages** if the environment exists. Confirm that `gh-pages` is permitted by any deployment branch rule and that no unintended reviewer gate blocks automatic updates.
-4. Confirm the organization Actions policy permits the four official `actions/*` dependencies pinned in `.github/workflows/deploy-pages.yml`.
-5. Re-run the failed deployment job from its Actions run, or push a small follow-up commit to `gh-pages`.
+2. Under **Build and deployment**, set **Source** to **Deploy from a branch**.
+3. Select branch **`gh-pages`**, directory **`/(root)`**, and save.
 
-Do not choose **Deploy from a branch** while the custom workflow is in use. That is the native MOOZY-style alternative, but combining both mechanisms makes ownership and troubleshooting ambiguous.
+GitHub then creates its managed `pages build and deployment` workflow. Every push to `gh-pages` republishes the root automatically. The committed `.github/workflows/validate-site.yml` is intentionally validation-only; it does not create a second Pages deployment or race the managed branch deployment.
 
-### 2.3 Finish repository metadata
-
-After the workflow succeeds and the URL returns HTTP 200:
+After the site returns HTTP 200:
 
 1. Set the repository **About → Website** field to `https://atlasanalyticslab.github.io/PathoSynVLM/`.
-2. Confirm the prepared project-page badge/link on `main` resolves correctly; add a launch note if desired.
-3. Consider protecting `gh-pages`: require a pull request and the **Validate static site** check, while allowing the Pages workflow to deploy.
-
-The custom workflow lives only on `gh-pages`, so GitHub's normal manual **Run workflow** control is not promised. Automatic push deployment and the **Re-run jobs** control on an existing run are supported.
+2. Confirm the project-page badge/link on `main` resolves correctly.
+3. Consider protecting `gh-pages`: require a pull request and the **Validate static site** check.
 
 ## 3. Local development
 
@@ -93,11 +73,11 @@ git branch --show-current
 No installation is required beyond Python 3:
 
 ```bash
-python3 scripts/validate_site.py site
-python3 -m http.server 8000 --directory site
+python3 scripts/validate_site.py .
+python3 -m http.server 8000 --directory .
 ```
 
-Open <http://localhost:8000/>. Test at narrow and wide viewport sizes, keyboard navigation, the mobile menu, figure links, and the BibTeX copy button. Clipboard access uses the browser's secure-context API on Pages and a fallback for local HTTP preview.
+Open <http://localhost:8000/>. Test wide and narrow viewport sizes, keyboard navigation, result tabs, figure lightboxes, and the BibTeX copy button.
 
 ## 4. Normal change workflow
 
@@ -107,14 +87,15 @@ git pull --ff-only
 git switch -c website/short-description
 
 # edit and preview
-python3 scripts/validate_site.py site
+python3 scripts/validate_site.py .
 
-git add site README.md DEVELOPMENT.md CONTRIBUTING.md scripts .github
+git add index.html 404.html static robots.txt sitemap.xml .nojekyll \
+  README.md DEVELOPMENT.md CONTRIBUTING.md scripts .github
 git commit -m "website: describe the visible change"
 git push -u origin website/short-description
 ```
 
-Open a pull request with **base: `gh-pages`**. A pull request targeting `main` is the wrong destination for website changes. The workflow validates pull requests but deploys only after a push reaches `gh-pages`.
+Open a pull request with **base: `gh-pages`**. A pull request targeting `main` is the wrong destination for website changes. Pull requests validate without publishing; merging to `gh-pages` triggers GitHub's managed Pages deployment.
 
 ## 5. Sources of truth
 
@@ -123,35 +104,40 @@ Scientific content should not drift independently of the paper and code.
 | Website content | Primary source |
 |---|---|
 | Title, authors, abstract, venue status | arXiv record `2605.30716` |
-| Model components and training stages | `main/README.md`, `main/MODEL_CARD.md`, paper |
-| Headline metrics | `main/configs/reported_results.json` |
+| Model components and training stages | Paper, `main/README.md`, `main/MODEL_CARD.md` |
+| Headline metrics | Paper Table 3, `main/configs/reported_results.json` |
+| Efficiency values | Paper Table 4 |
 | Architecture figure | `main/assets/paper_architecture.png` |
-| Results figure | `main/assets/reported_results.svg` |
+| Training-data figure | Paper Figure 4 (`a_dataset_distribution.png`) |
+| Qualitative examples | Paper Figure 8 (`baseline_stage2_val_examples_histai_wsi_gt_pred.png`) |
 | Commands and reproduction links | `main/docs/paper_pipeline.md` |
 | Citation | arXiv record and `main/README.md` |
 
-When a paper version changes, compare the title, authors, abstract, venue, citation, claims, and metrics before editing the page. Use the paper's wording for scientific claims; do not infer stronger claims from a single metric.
+When a paper version changes, compare the title, authors, abstract, venue, citation, claims, figures, and metrics before editing the page. Use the paper's wording for scientific claims; do not infer stronger claims from a single metric or qualitative example.
 
-The public page currently omits a model button because the documented Hugging Face endpoint is not accessible without authentication. Add the button only after an unauthenticated request reaches the intended public model page. Remove the release note at the same time.
+The public page omits a model button because the documented Hugging Face endpoint is not accessible without authentication. Add the button only after an unauthenticated request reaches the intended public model page.
 
-Before the first public launch, the authors must also confirm the exact Stage 2 release configuration. Paper Table 3's headline values (`0.2495/0.1988/0.0525/0.3018`) reappear as the B1 prompt-repetition setting in Table 7, while Tables 11–12 report WSI-marker variants separately. The current `main/configs/stage2_main_paper.json` enables both prompt repetition and WSI markers. Do not relabel a marker result or change that config based on inference; reconcile the paper, config, and website with the experiment owner.
+The experiment owner must confirm the exact Stage 2 release configuration. Paper Table 3's headline values (`0.2495/0.1988/0.0525/0.3018`) reappear as the B1 prompt-repetition setting in Table 7, while Tables 11–12 report WSI-marker variants separately. The current `main/configs/stage2_main_paper.json` enables both prompt repetition and WSI markers. Do not relabel a marker result or change that config based on inference; reconcile the paper, config, and website with the experiment owner.
+
+Paper Figure 4 labels the Stage 2 total as `43,619` cases and the mixed group as `20,925`, while Table 2 reports `43,618` and `20,924`. The site preserves the published figure but deliberately avoids restating the conflicting Stage 2 total in prose. The paper owner should reconcile those source values before a future figure revision.
 
 ## 6. URL and asset rules
 
 - Use relative paths such as `static/images/figure.png` in `index.html`. GitHub hosts this project below `/PathoSynVLM/`, not at the domain root.
-- The root-relative links in `404.html` are an intentional exception: a 404 can be served from an arbitrary nested path and must return to `/PathoSynVLM/`.
+- The root-relative links in `404.html` are an intentional exception because a 404 can be served from an arbitrary nested URL.
 - Use HTTPS for every external link.
-- Prefer first-party, local assets. Remote styles, fonts, and scripts add privacy, availability, and supply-chain risk.
-- Keep a single asset below 5 MiB; the validator enforces this limit. Optimize large raster figures before committing.
+- Prefer first-party, local assets. Remote styles, fonts, and scripts add availability and supply-chain risk.
+- Keep a single asset below 5 MiB; the validator enforces this limit. Load large paper figures lazily.
 - Provide accurate `width`, `height`, and `alt` attributes for informative images.
-- The Open Graph image URL must be absolute. If the production host changes, update the canonical URL, Open Graph URL/image, `robots.txt`, `sitemap.xml`, `404.html`, and constants in `scripts/validate_site.py` together.
-- Do not edit the copied paper figures on this branch and leave `main` stale. Update the source asset on `main`, then deliberately copy the approved result to `gh-pages`.
+- The Open Graph image URL must be absolute. If the production host changes, update the canonical URL, Open Graph URL/image, `robots.txt`, `sitemap.xml`, `404.html`, and validator constants together.
+- Paper-derived figures follow the paper's CC BY-NC-SA 4.0 license. Record the paper figure number and source filename in this guide when adding one.
+- If a copied asset also lives on `main`, update the source asset there first, then copy the approved result to `gh-pages`.
 
 ## 7. Validation and deployment internals
 
 `scripts/validate_site.py` uses only the Python standard library. It checks:
 
-- required Pages, CSS, JavaScript, image, sitemap, and marker files;
+- required HTML, CSS, JavaScript, image, sitemap, and marker files;
 - HTML language, title, viewport, description, and canonical metadata;
 - duplicate IDs and same-page anchors;
 - local files referenced by `href` and `src`;
@@ -160,26 +146,18 @@ Before the first public launch, the authors must also confirm the exact Stage 2 
 - sitemap and robots URL consistency; and
 - the 5 MiB per-file asset budget.
 
-`.github/workflows/deploy-pages.yml` pins immutable commits for:
+`.github/workflows/validate-site.yml` pins `actions/checkout` to an immutable commit and grants only `contents: read`. It runs on pushes and pull requests targeting `gh-pages`. Deployment itself is owned by GitHub's dynamic `pages build and deployment` workflow generated from the repository Pages setting.
 
-- `actions/checkout` (version noted in the inline comment),
-- `actions/configure-pages`,
-- `actions/upload-pages-artifact`, and
-- `actions/deploy-pages`.
-
-When updating an action, verify its release in the official action repository, replace the full commit SHA, update the version comment, and review its release notes. Never replace a pinned official action with an unreviewed third-party action merely for convenience.
-
-The deploy job has the minimum required `contents: read`, `pages: write`, and `id-token: write` permissions. Pull requests receive only read permission and never run the deploy job.
+When updating the checkout action, verify its release in the official repository, replace the full commit SHA, update the version comment, and review its release notes.
 
 ## 8. Troubleshooting
 
 | Symptom | Likely cause | Resolution |
 |---|---|---|
-| `configure-pages` says the site is not found | Pages is disabled or its source is not GitHub Actions | Complete section 2.2, then re-run the deployment job |
-| Deploy job receives `403` or OIDC/environment errors | Organization Actions policy or `github-pages` protection blocks the branch | Review Actions policy and environment deployment rules with an admin |
-| Validation passes but CSS/images are missing online | A project-site path was changed to a domain-root path | Restore relative paths and run the validator |
-| Production still shows an older revision | A run failed, environment approval is pending, or edge caching has not expired | Check the latest Actions run and deployment SHA; after success, allow several minutes |
-| The workflow has no manual Run button | Its definition is isolated from the default branch by design | Push a commit or use **Re-run jobs** on an existing run |
+| Production shows this branch's README | `index.html` is missing from the published root, or Pages points at the wrong folder | Confirm root `index.html` exists and Pages uses `gh-pages` + `/(root)` |
+| Two workflows deploy different Pages artifacts | A custom deploy workflow is racing branch publishing | Keep the committed workflow validation-only; use only the managed branch deployment |
+| Validation passes but CSS/images are missing | A project-site path was changed to a domain-root path | Restore relative paths and run the validator |
+| Production shows an older revision | The managed Pages run failed or edge caching has not expired | Check the latest `pages build and deployment` run and allow several minutes after success |
 | The model link prompts for authentication | The model repository is private or gated | Keep the public model button absent until release policy changes |
 
 ## 9. Safe rollback
@@ -200,14 +178,14 @@ Do not force-push `gh-pages` to roll back. If GitHub Pages itself is experiencin
 
 Before announcing a new website version:
 
-- [ ] `python3 scripts/validate_site.py site` passes.
-- [ ] The page is readable at desktop and mobile widths.
-- [ ] Keyboard navigation, the menu, copy button, and figure links work.
+- [ ] `python3 scripts/validate_site.py .` passes.
+- [ ] The page is readable at desktop and mobile widths without horizontal page overflow.
+- [ ] Keyboard navigation, tabs, lightboxes, copy button, and figure links work.
 - [ ] Paper, code, documentation, and citation links reach the intended public resources.
-- [ ] Scientific claims and metrics match their sources of truth.
+- [ ] Scientific claims, figures, and metrics match their sources of truth.
 - [ ] The experiment owner has confirmed the Stage 2 headline configuration and reconciled the paper/config labels.
-- [ ] The latest `gh-pages` commit matches the successful deployment SHA.
-- [ ] <https://atlasanalyticslab.github.io/PathoSynVLM/> returns HTTP 200.
+- [ ] The latest `gh-pages` commit matches the successful managed Pages deployment SHA.
+- [ ] The production root, figure URLs, custom 404, and sitemap return successfully.
 - [ ] The browser console contains no site-owned errors.
 - [ ] The `main` README and repository About URL point to the live project page.
 

@@ -1,31 +1,29 @@
 # PathoSynVLM project website
 
-[![Website deployment](https://github.com/AtlasAnalyticsLab/PathoSynVLM/actions/workflows/deploy-pages.yml/badge.svg?branch=gh-pages)](https://github.com/AtlasAnalyticsLab/PathoSynVLM/actions/workflows/deploy-pages.yml)
+[![Website validation](https://github.com/AtlasAnalyticsLab/PathoSynVLM/actions/workflows/validate-site.yml/badge.svg?branch=gh-pages)](https://github.com/AtlasAnalyticsLab/PathoSynVLM/actions/workflows/validate-site.yml)
 
-This orphan `gh-pages` branch contains the project website for [PathoSynVLM](https://github.com/AtlasAnalyticsLab/PathoSynVLM). It intentionally has no shared history with the `main` research-code branch.
+This orphan `gh-pages` branch contains the project website for [PathoSynVLM](https://github.com/AtlasAnalyticsLab/PathoSynVLM). It intentionally has no shared history with the `main` research-code branch and follows the same branch-root publishing pattern as the MOOZY project page.
 
 - Production URL: <https://atlasanalyticslab.github.io/PathoSynVLM/>
 - Paper: <https://arxiv.org/abs/2605.30716>
 - Research code: <https://github.com/AtlasAnalyticsLab/PathoSynVLM/tree/main>
 - Maintainer guide: [DEVELOPMENT.md](DEVELOPMENT.md)
 
-Keeping the histories separate means the default `main` working tree contains only the Python project. A standard multi-branch clone may still fetch the `gh-pages` Git objects; use the single-branch command below when transfer-level isolation matters. Website maintainers can clone this branch alone or attach it as a second Git worktree.
+The default `main` working tree contains no website files. A standard multi-branch clone may still fetch the `gh-pages` Git objects; use the single-branch command below when transfer-level isolation matters.
 
 ## Repository layout
 
 ```text
 .
-├── .github/workflows/deploy-pages.yml  # validate and deploy on gh-pages pushes
-├── site/                               # exact artifact published to Pages
-│   ├── index.html
-│   ├── 404.html
-│   ├── robots.txt
-│   ├── sitemap.xml
-│   └── static/
-│       ├── css/site.css
-│       ├── js/site.js
-│       └── images/
-├── scripts/validate_site.py            # dependency-free local/CI validation
+├── index.html                         # page served at the project URL
+├── 404.html
+├── .nojekyll                          # serve the static files without Jekyll
+├── static/
+│   ├── css/index.css
+│   ├── js/index.js
+│   └── images/
+├── .github/workflows/validate-site.yml
+├── scripts/validate_site.py
 ├── CONTRIBUTING.md
 └── DEVELOPMENT.md
 ```
@@ -37,8 +35,8 @@ The site is plain HTML, CSS, and JavaScript. It has no package manager, generate
 From this branch:
 
 ```bash
-python3 scripts/validate_site.py site
-python3 -m http.server 8000 --directory site
+python3 scripts/validate_site.py .
+python3 -m http.server 8000 --directory .
 ```
 
 Open <http://localhost:8000/>. Stop the preview server with <kbd>Ctrl</kbd>+<kbd>C</kbd>.
@@ -55,14 +53,14 @@ To keep one clone and two working directories instead, see the worktree instruct
 
 ## Deployment summary
 
-Every push to `gh-pages` runs the committed workflow:
+The repository uses GitHub Pages branch publishing from `gh-pages` and `/(root)`:
 
-1. Validate HTML metadata, local paths, anchors, required files, the sitemap, and asset sizes.
-2. Upload only `site/` as the GitHub Pages artifact.
-3. Deploy that artifact to the protected `github-pages` environment.
+1. A pull request or push runs the committed dependency-free site validator.
+2. GitHub's managed `pages build and deployment` workflow publishes the branch root after each push.
+3. Root `index.html` is served directly; `.nojekyll` prevents README/Jekyll rendering from replacing it.
 
-Pull requests targeting `gh-pages` run validation but do not deploy. The initial repository setup requires an administrator to select **GitHub Actions** under **Settings → Pages → Source**. Full setup, rollback, and troubleshooting instructions are in [DEVELOPMENT.md](DEVELOPMENT.md).
+Website changes therefore remain independent of `main` and deploy automatically when they reach `gh-pages`. Initial setup, rollback, and troubleshooting instructions are in [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## License
 
-Website content and first-party assets are provided under [CC BY-NC-SA 4.0](LICENSE). Linked datasets, third-party models, and externally hosted resources retain their own terms.
+Website content and first-party paper assets are provided under [CC BY-NC-SA 4.0](LICENSE). Linked datasets, third-party models, and externally hosted resources retain their own terms.

@@ -11,9 +11,9 @@ Thank you for helping keep the PathoSynVLM project page accurate and usable.
 ## Make a website change
 
 1. Create a short-lived branch from `gh-pages`.
-2. Edit files under `site/` and update maintainer documentation when behavior changes.
-3. Run `python3 scripts/validate_site.py site`.
-4. Preview with `python3 -m http.server 8000 --directory site` at desktop and mobile widths.
+2. Edit the root `index.html`, `static/` assets, and maintainer documentation as needed.
+3. Run `python3 scripts/validate_site.py .`.
+4. Preview with `python3 -m http.server 8000 --directory .` at desktop and mobile widths.
 5. Open a pull request with base branch `gh-pages`.
 
 The pull request should explain the visible change, identify the source for new scientific claims or numbers, and include screenshots for layout changes. The validation workflow runs on the pull request. Merging to `gh-pages` deploys automatically.

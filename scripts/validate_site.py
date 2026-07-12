@@ -26,11 +26,12 @@ REQUIRED_FILES = {
     "robots.txt",
     "sitemap.xml",
     ".nojekyll",
-    "static/css/site.css",
-    "static/js/site.js",
+    "static/css/index.css",
+    "static/js/index.js",
     "static/images/favicon.svg",
-    "static/images/paper_architecture.png",
-    "static/images/reported_results.svg",
+    "static/images/architecture.png",
+    "static/images/training_data.png",
+    "static/images/case_examples.png",
 }
 MAX_ASSET_BYTES = 5 * 1024 * 1024
 
@@ -112,6 +113,16 @@ def parse_document(path: Path) -> Document:
     return parser.document
 
 
+def iter_site_files(root: Path) -> list[Path]:
+    """Return repository files while excluding Git's internal checkout data."""
+
+    return sorted(
+        path
+        for path in root.rglob("*")
+        if path.is_file() and ".git" not in path.relative_to(root).parts
+    )
+
+
 def local_target(
     root: Path, document: Document, url: str
 ) -> tuple[Path | None, str | None, str | None]:
@@ -150,7 +161,7 @@ def local_target(
 def main() -> int:
     argument_parser = argparse.ArgumentParser(description=__doc__)
     argument_parser.add_argument(
-        "root", nargs="?", default="site", type=Path, help="static site root"
+        "root", nargs="?", default=".", type=Path, help="static site root"
     )
     args = argument_parser.parse_args()
     root = args.root.resolve()
@@ -160,12 +171,14 @@ def main() -> int:
         print(f"ERROR: site root does not exist: {root}", file=sys.stderr)
         return 1
 
+    site_files = iter_site_files(root)
+
     for relative_path in sorted(REQUIRED_FILES):
         path = root / relative_path
         if not path.is_file():
             errors.append(f"missing required file: {relative_path}")
 
-    html_paths = sorted(root.rglob("*.html"))
+    html_paths = [path for path in site_files if path.suffix == ".html"]
     documents: dict[Path, Document] = {}
     for path in html_paths:
         try:
@@ -226,7 +239,7 @@ def main() -> int:
                         f"'{fragment}' in {target.relative_to(root)}"
                     )
 
-    for asset in sorted(path for path in root.rglob("*") if path.is_file()):
+    for asset in site_files:
         size = asset.stat().st_size
         if size > MAX_ASSET_BYTES:
             errors.append(
@@ -261,8 +274,8 @@ def main() -> int:
             print(f"  - {error}")
         return 1
 
-    file_count = sum(1 for path in root.rglob("*") if path.is_file())
-    total_bytes = sum(path.stat().st_size for path in root.rglob("*") if path.is_file())
+    file_count = len(site_files)
+    total_bytes = sum(path.stat().st_size for path in site_files)
     print(
         "Static-site validation passed: "
         f"{len(documents)} HTML documents, {file_count} files, "
