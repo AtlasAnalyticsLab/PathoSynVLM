@@ -9,27 +9,27 @@ The repository has two intentionally independent histories:
 | Branch | Purpose | Checked out in the default working tree? | Deployment effect |
 |---|---|---:|---|
 | `main` | Python package, paper configs, research docs, and code assets | Yes | None |
-| `gh-pages` | Static project page, validation, and website maintenance docs | No | A push validates and publishes the branch root |
+| `gh-pages` | Static project page, validation, and website maintenance docs | No | A push runs the single website validation-and-deployment workflow |
 
 `gh-pages` is an orphan branch: it has no common ancestor with `main`. Do not merge one branch into the other. Transfer an approved paper asset or small documentation change deliberately and record its source in the commit message.
 
-The actual page lives at `index.html` in the `gh-pages` root. This is important: GitHub Pages branch publishing serves the branch root, so putting the page only in a nested `site/` directory causes GitHub to render the branch README instead.
+The actual page lives at `index.html` in the `gh-pages` root. The deployment job stages that page and its public assets into a temporary `_site` artifact; repository notes, scripts, and workflow files are not published.
 
 ## 2. GitHub Pages configuration
 
-The intended repository setting is:
+The required repository setting is:
 
 1. Open **Settings → Pages** in `AtlasAnalyticsLab/PathoSynVLM`.
-2. Under **Build and deployment**, set **Source** to **Deploy from a branch**.
-3. Select branch **`gh-pages`**, directory **`/(root)`**, and save.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+3. Open **Settings → Environments → github-pages** if deployment restrictions are configured. Confirm `gh-pages` is allowed and no unintended reviewer gate blocks automatic publication.
 
-GitHub then creates its managed `pages build and deployment` workflow. Every push to `gh-pages` republishes the root automatically. The committed `.github/workflows/validate-site.yml` is intentionally validation-only; it does not create a second Pages deployment or race the managed branch deployment.
+Do not select **Deploy from a branch** while the committed workflow is in use. That setting creates a second GitHub-managed Pages run for every push and gives the repository two competing publishers.
 
 After the site returns HTTP 200:
 
 1. Set the repository **About → Website** field to `https://atlasanalyticslab.github.io/PathoSynVLM/`.
 2. Confirm the project-page badge/link on `main` resolves correctly.
-3. Consider protecting `gh-pages`: require a pull request and the **Validate static site** check.
+3. Consider protecting `gh-pages`: require a pull request and the **Check PathoSynVLM static site** check.
 
 ## 3. Local development
 
@@ -95,7 +95,7 @@ git commit -m "website: describe the visible change"
 git push -u origin website/short-description
 ```
 
-Open a pull request with **base: `gh-pages`**. A pull request targeting `main` is the wrong destination for website changes. Pull requests validate without publishing; merging to `gh-pages` triggers GitHub's managed Pages deployment.
+Open a pull request with **base: `gh-pages`**. A pull request targeting `main` is the wrong destination for website changes. Pull requests validate without publishing; merging to `gh-pages` runs validation and then deployment in the same workflow.
 
 ## 5. Sources of truth
 
@@ -150,26 +150,25 @@ Paper Figure 4 labels the Stage 2 total as `43,619` cases and the mixed group as
 - sitemap and robots URL consistency; and
 - the 5 MiB per-file asset budget.
 
-`.github/workflows/validate-site.yml` defines `PathoSynVLM website checks`, pins `actions/checkout` to an immutable commit, and grants only `contents: read`. It runs on pushes and pull requests targeting `gh-pages`. Deployment itself is owned by GitHub's dynamic `pages build and deployment` workflow generated from the repository Pages setting.
+`.github/workflows/validate-site.yml` defines the single `PathoSynVLM website` workflow. It runs on pushes and pull requests targeting `gh-pages`:
 
-A normal push therefore creates exactly two Actions runs:
+- The `validate` job grants only `contents: read` and runs the dependency-free validator.
+- The `deploy` job runs only for pushes, depends on successful validation, and receives the minimum `contents: read`, `pages: write`, and `id-token: write` permissions required by GitHub Pages.
+- The deploy job stages `index.html`, `404.html`, `.nojekyll`, `robots.txt`, `sitemap.xml`, and `static/` into `_site`. Only that temporary directory is uploaded as the Pages artifact.
 
-1. `PathoSynVLM website checks` — repository-owned validation.
-2. `pages build and deployment` — GitHub-managed publication.
+The workflow pins immutable commits for `actions/checkout`, `actions/configure-pages`, `actions/upload-pages-artifact`, and `actions/deploy-pages`. When updating an action, verify its release in the official repository, replace the full commit SHA, update the version comment, and review its release notes.
 
-Rows from earlier pushes are completed run history, not additional active workflows. Do not add a second custom Pages deployer while branch publishing is enabled.
-
-When updating the checkout action, verify its release in the official repository, replace the full commit SHA, update the version comment, and review its release notes.
+GitHub adds a new run record whenever the workflow is triggered. This is normal audit history and does not create another workflow definition. If a separate `pages build and deployment` run also appears for the same SHA, the Pages source is still set to branch publishing; change it to **GitHub Actions**.
 
 ## 8. Troubleshooting
 
 | Symptom | Likely cause | Resolution |
 |---|---|---|
-| Production shows this branch's README | `index.html` is missing from the published root, or Pages points at the wrong folder | Confirm root `index.html` exists and Pages uses `gh-pages` + `/(root)` |
-| Two workflows deploy different Pages artifacts | A custom deploy workflow is racing branch publishing | Keep the committed workflow validation-only; use only the managed branch deployment |
-| More than two rows appear under All workflows | GitHub is retaining completed run history | Confirm the names above; delete old completed runs only when their audit history is no longer needed |
+| `configure-pages` says the site is not configured for workflows | Pages still uses branch publishing or is disabled | Set **Settings → Pages → Source** to **GitHub Actions**, then rerun or push a follow-up commit |
+| A separate `pages build and deployment` run appears | Pages still uses **Deploy from a branch** | Switch the Pages source to **GitHub Actions** so `PathoSynVLM website` is the only publisher |
+| Multiple rows named `PathoSynVLM website` appear | GitHub is retaining completed runs of the same workflow | This is normal audit history; delete old completed runs only when their records are no longer needed |
 | Validation passes but CSS/images are missing | A project-site path was changed to a domain-root path | Restore relative paths and run the validator |
-| Production shows an older revision | The managed Pages run failed or edge caching has not expired | Check the latest `pages build and deployment` run and allow several minutes after success |
+| Production shows an older revision | The deploy job failed, is awaiting environment approval, or edge caching has not expired | Check the latest `PathoSynVLM website` run and allow several minutes after success |
 | The model link prompts for authentication | The model repository is private or gated | Keep the public model button absent until release policy changes |
 
 ## 9. Safe rollback
@@ -196,7 +195,7 @@ Before announcing a new website version:
 - [ ] Paper, code, documentation, and citation links reach the intended public resources.
 - [ ] Scientific claims, figures, and metrics match their sources of truth.
 - [ ] The experiment owner has confirmed the Stage 2 headline configuration and reconciled the paper/config labels.
-- [ ] The latest `gh-pages` commit matches the successful managed Pages deployment SHA.
+- [ ] The latest `gh-pages` commit matches the successful `PathoSynVLM website` deployment SHA.
 - [ ] The production root, figure URLs, custom 404, and sitemap return successfully.
 - [ ] The browser console contains no site-owned errors.
 - [ ] The `main` README and repository About URL point to the live project page.

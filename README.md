@@ -1,6 +1,6 @@
 # PathoSynVLM project website
 
-[![Website validation](https://github.com/AtlasAnalyticsLab/PathoSynVLM/actions/workflows/validate-site.yml/badge.svg?branch=gh-pages)](https://github.com/AtlasAnalyticsLab/PathoSynVLM/actions/workflows/validate-site.yml)
+[![PathoSynVLM website](https://github.com/AtlasAnalyticsLab/PathoSynVLM/actions/workflows/validate-site.yml/badge.svg?branch=gh-pages)](https://github.com/AtlasAnalyticsLab/PathoSynVLM/actions/workflows/validate-site.yml)
 
 This orphan `gh-pages` branch contains the project website for [PathoSynVLM](https://github.com/AtlasAnalyticsLab/PathoSynVLM). It intentionally has no shared history with the `main` research-code branch and uses a branch-root static publishing layout.
 
@@ -53,13 +53,13 @@ To keep one clone and two working directories instead, see the worktree instruct
 
 ## Deployment summary
 
-The repository uses GitHub Pages branch publishing from `gh-pages` and `/(root)`:
+The repository uses one committed workflow named `PathoSynVLM website`:
 
-1. A pull request or push runs the committed dependency-free `PathoSynVLM website checks` workflow.
-2. GitHub's managed `pages build and deployment` workflow publishes the branch root after each push.
-3. Root `index.html` is served directly; `.nojekyll` prevents README/Jekyll rendering from replacing it.
+1. Pull requests and pushes validate the static files with `scripts/validate_site.py`.
+2. On a `gh-pages` push, the deploy job runs only after validation succeeds.
+3. The workflow stages only the public HTML, metadata, and `static/` assets, then publishes that artifact to GitHub Pages.
 
-These are the only two workflows expected for a normal `gh-pages` push. The Actions page keeps completed runs as history, so multiple rows there do not mean that multiple workflow definitions are active.
+GitHub records a new **run** of this same workflow for every update; it does not create a new workflow definition. Under **Settings → Pages**, the source must be **GitHub Actions** so GitHub does not also create a separate branch-publishing run.
 
 Website changes therefore remain independent of `main` and deploy automatically when they reach `gh-pages`. Initial setup, rollback, and troubleshooting instructions are in [DEVELOPMENT.md](DEVELOPMENT.md).
 

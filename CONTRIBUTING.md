@@ -16,7 +16,7 @@ Thank you for helping keep the PathoSynVLM project page accurate and usable.
 4. Preview with `python3 -m http.server 8000 --directory .` at desktop and mobile widths.
 5. Open a pull request with base branch `gh-pages`.
 
-The pull request should explain the visible change, identify the source for new scientific claims or numbers, and include screenshots for layout changes. The validation workflow runs on the pull request. Merging to `gh-pages` deploys automatically.
+The pull request should explain the visible change, identify the source for new scientific claims or numbers, and include screenshots for layout changes. The single website workflow validates the pull request; after merge, the same workflow validates again and deploys automatically.
 
 ## Content requirements
 
