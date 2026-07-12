@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">PathoSynVLM</title>
+  <defs>
+    <linearGradient id="background" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#164f83"/>
+      <stop offset="1" stop-color="#0e8a9c"/>
+    </linearGradient>
+  </defs>
+  <path d="M10 16C16 5 29 5 39 8c12 4 20 13 17 27-3 15-16 23-31 20C10 53 3 42 7 29c1-5 1-9 3-13Z" fill="url(#background)"/>
+  <circle cx="45" cy="17" r="6" fill="#efbad0"/>
+  <path d="M23 18h11c8 0 13 4 13 11 0 8-6 12-14 12h-3v8h-7V18Zm7 6v11h4c4 0 6-2 6-6 0-3-2-5-6-5h-4Z" fill="#fff"/>
+</svg>
