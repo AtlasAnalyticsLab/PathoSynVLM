@@ -2,7 +2,7 @@
 
 [![Website validation](https://github.com/AtlasAnalyticsLab/PathoSynVLM/actions/workflows/validate-site.yml/badge.svg?branch=gh-pages)](https://github.com/AtlasAnalyticsLab/PathoSynVLM/actions/workflows/validate-site.yml)
 
-This orphan `gh-pages` branch contains the project website for [PathoSynVLM](https://github.com/AtlasAnalyticsLab/PathoSynVLM). It intentionally has no shared history with the `main` research-code branch and follows the same branch-root publishing pattern as the MOOZY project page.
+This orphan `gh-pages` branch contains the project website for [PathoSynVLM](https://github.com/AtlasAnalyticsLab/PathoSynVLM). It intentionally has no shared history with the `main` research-code branch and uses a branch-root static publishing layout.
 
 - Production URL: <https://atlasanalyticslab.github.io/PathoSynVLM/>
 - Paper: <https://arxiv.org/abs/2605.30716>

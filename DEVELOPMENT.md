@@ -13,7 +13,7 @@ The repository has two intentionally independent histories:
 
 `gh-pages` is an orphan branch: it has no common ancestor with `main`. Do not merge one branch into the other. Transfer an approved paper asset or small documentation change deliberately and record its source in the commit message.
 
-The actual page lives at `index.html` in the `gh-pages` root, matching the MOOZY project-page pattern. This is important: GitHub Pages branch publishing serves the branch root, so putting the page only in a nested `site/` directory causes GitHub to render the branch README instead.
+The actual page lives at `index.html` in the `gh-pages` root. This is important: GitHub Pages branch publishing serves the branch root, so putting the page only in a nested `site/` directory causes GitHub to render the branch README instead.
 
 ## 2. GitHub Pages configuration
 
