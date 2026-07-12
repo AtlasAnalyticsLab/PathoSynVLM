@@ -58,8 +58,9 @@ The repository uses one committed workflow named `PathoSynVLM website`:
 1. Pull requests and pushes validate the static files with `scripts/validate_site.py`.
 2. On a `gh-pages` push, the deploy job runs only after validation succeeds.
 3. The workflow stages only the public HTML, metadata, and `static/` assets, then publishes that artifact to GitHub Pages.
+4. After a successful deployment, the same workflow removes its superseded completed run records so the Actions page retains only the latest website run.
 
-GitHub records a new **run** of this same workflow for every update; it does not create a new workflow definition. Under **Settings → Pages**, the source must be **GitHub Actions** so GitHub does not also create a separate branch-publishing run.
+GitHub must start a new **run** of this same workflow for every update; it does not create a new workflow definition. The cleanup job removes older completed runs after the new deployment succeeds. Under **Settings → Pages**, the source must be **GitHub Actions** so GitHub does not also create a separate branch-publishing run.
 
 Website changes therefore remain independent of `main` and deploy automatically when they reach `gh-pages`. Initial setup, rollback, and troubleshooting instructions are in [DEVELOPMENT.md](DEVELOPMENT.md).
 

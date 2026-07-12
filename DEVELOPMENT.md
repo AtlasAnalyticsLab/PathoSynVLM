@@ -125,7 +125,7 @@ The experiment owner must confirm the exact Stage 2 release configuration. Paper
 
 Paper Figure 4 labels the Stage 2 total as `43,619` cases and the mixed group as `20,925`, while Table 2 reports `43,618` and `20,924`. The site preserves the published figure but deliberately avoids restating the conflicting Stage 2 total in prose. The paper owner should reconcile those source values before a future figure revision.
 
-The Results evidence audit is native HTML and CSS, not a pasted slide image. When updating it, keep the limitations ahead of the charts and update the visible counts, bar percentages, sample sizes, and accessible labels together. Preserve the comparator-specific protocols, HistoGPT skin-only qualifier, one-reader/no-significance-test limitation, and the statement that neither audited system is clinically adequate. The ≈93% composition note describes the full Stage 2 corpus, not the pathologist-audit subset. Ignore unrelated leftover slide objects that are not part of the stress-test content.
+The Results evidence audit is native HTML and CSS, not a pasted slide image. Present study context in the chart labels, audit card, and expandable methodology note rather than a highlighted limitations callout. When updating it, change the visible counts, bar percentages, sample sizes, and accessible labels together. Preserve the comparator-specific protocols, HistoGPT skin-only qualifier, one-reader/no-significance-test context, and the paper's clinical-adequacy interpretation in the methodology note. The ≈93% composition note describes the full Stage 2 corpus, not the pathologist-audit subset. Ignore unrelated leftover slide objects that are not part of the stress-test content.
 
 ## 6. URL and asset rules
 
@@ -159,10 +159,11 @@ The Results evidence audit is native HTML and CSS, not a pasted slide image. Whe
 - The `validate` job grants only `contents: read` and runs the dependency-free validator.
 - The `deploy` job runs only for pushes, depends on successful validation, and receives the minimum `contents: read`, `pages: write`, and `id-token: write` permissions required by GitHub Pages.
 - The deploy job stages `index.html`, `404.html`, `.nojekyll`, `robots.txt`, `sitemap.xml`, and `static/` into `_site`. Only that temporary directory is uploaded as the Pages artifact.
+- After a successful push deployment, the `cleanup` job receives only `actions: write` and permanently deletes superseded completed runs of this same workflow. The current in-progress run remains and becomes the single retained run when it completes.
 
 The workflow pins immutable commits for `actions/checkout`, `actions/configure-pages`, `actions/upload-pages-artifact`, and `actions/deploy-pages`. When updating an action, verify its release in the official repository, replace the full commit SHA, update the version comment, and review its release notes.
 
-GitHub adds a new run record whenever the workflow is triggered. This is normal audit history and does not create another workflow definition. If a separate `pages build and deployment` run also appears for the same SHA, the Pages source is still set to branch publishing; change it to **GitHub Actions**.
+GitHub must add a new run record whenever the workflow is triggered; this does not create another workflow definition. After a successful deployment, the cleanup job removes older completed records. Failed deployments remain available for diagnosis until a later successful deployment performs cleanup. If a separate `pages build and deployment` run appears for the same SHA, the Pages source is still set to branch publishing; change it to **GitHub Actions**.
 
 ## 8. Troubleshooting
 
@@ -170,7 +171,7 @@ GitHub adds a new run record whenever the workflow is triggered. This is normal 
 |---|---|---|
 | `configure-pages` says the site is not configured for workflows | Pages still uses branch publishing or is disabled | Set **Settings → Pages → Source** to **GitHub Actions**, then rerun or push a follow-up commit |
 | A separate `pages build and deployment` run appears | Pages still uses **Deploy from a branch** | Switch the Pages source to **GitHub Actions** so `PathoSynVLM website` is the only publisher |
-| Multiple rows named `PathoSynVLM website` appear | GitHub is retaining completed runs of the same workflow | This is normal audit history; delete old completed runs only when their records are no longer needed |
+| Multiple rows named `PathoSynVLM website` remain after a successful deployment | The cleanup job failed or its token could not use `actions: write` | Open the latest run and inspect `Remove superseded website runs`; confirm repository policy permits the job-level permission |
 | Validation passes but CSS/images are missing | A project-site path was changed to a domain-root path | Restore relative paths and run the validator |
 | Production shows an older revision | The deploy job failed, is awaiting environment approval, or edge caching has not expired | Check the latest `PathoSynVLM website` run and allow several minutes after success |
 | The model link prompts for authentication | The model repository is private or gated | Keep the public model button absent until release policy changes |
