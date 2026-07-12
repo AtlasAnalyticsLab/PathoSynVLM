@@ -1,6 +1,7 @@
 # PathoSynVLM: Case-Level Pathology Report Generation
 
 [![arXiv](https://img.shields.io/badge/arXiv-2605.30716-b31b1b.svg)](https://arxiv.org/abs/2605.30716)
+[![Project Page](https://img.shields.io/badge/Project-Page-0e8a9c.svg)](https://atlasanalyticslab.github.io/PathoSynVLM/)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776ab.svg)](https://www.python.org/)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey.svg)](LICENSE)
 [![Model weights](https://img.shields.io/badge/model_weights-Hugging_Face-blue.svg)](weights/README.md)
@@ -22,6 +23,8 @@ Code and model-release utilities for:
 > arXiv:2605.30716
 
 Paper: https://arxiv.org/abs/2605.30716
+
+Project page: https://atlasanalyticslab.github.io/PathoSynVLM/
 
 ## News
 
@@ -342,6 +345,7 @@ export PYTHONNOUSERSITE=1
 - `PathText` support remains as an optional compatibility path, but the Stage 1 default is HistGen + REG2025.
 - The WSI-marker ablation settings are summarized in [configs/stage2_wsi_marker_ablation.json](configs/stage2_wsi_marker_ablation.json).
 - Raw WSIs, extracted H5 embeddings, checkpoints, and released weights are intentionally kept outside Git.
+- The project website and its deployment workflow live on the independent orphan [`gh-pages`](https://github.com/AtlasAnalyticsLab/PathoSynVLM/tree/gh-pages) branch. Keeping the site out of `main` ensures the default code working tree does not also contain website files; website maintenance is documented on that branch.
 
 ## Citation
 
