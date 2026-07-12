@@ -371,6 +371,182 @@ Conclusion: ...</code></pre>
               <p class="tab-note">The fixed schema supports field-level evaluation while retaining a free-form conclusion for case-level findings.</p>
             </div>
           </div>
+
+          <div class="evidence-audit-wrap" role="region" aria-labelledby="evidence-audit-heading">
+              <div class="evidence-audit">
+                <div class="evidence-intro">
+                  <div>
+                    <p class="evidence-kicker">Style-sensitive stress tests</p>
+                    <h3 id="evidence-audit-heading">Preference results depend on reporting style and domain specialization.</h3>
+                  </div>
+                  <p>
+                    These are separate evaluations of the Stage 2 model with different eligible case sets and reference targets. Read each comparison independently rather than as a pooled leaderboard.
+                  </p>
+                </div>
+
+                <aside class="evidence-limits" aria-label="Limitations of the evidence audit">
+                  <strong>Limits first</strong>
+                  <ul>
+                    <li>One pathologist</li>
+                    <li>67 skin cases</li>
+                    <li>39 pathologist ties</li>
+                    <li>No significance test</li>
+                    <li>≈93% of Stage 2 corpus is skin or mixed</li>
+                    <li>Neither audited system clinically adequate</li>
+                  </ul>
+                </aside>
+
+                <div class="evidence-grid">
+                  <section class="evidence-card preference-card" aria-labelledby="preference-heading">
+                    <div class="evidence-card-heading">
+                      <div>
+                        <h4 id="preference-heading">AI preference</h4>
+                        <p>LLM-as-judge · ours / tie / comparator</p>
+                      </div>
+                      <div class="preference-legend" role="group" aria-label="Chart legend">
+                        <span><i class="legend-win" aria-hidden="true"></i>Ours</span>
+                        <span><i class="legend-tie" aria-hidden="true"></i>Tie</span>
+                        <span><i class="legend-loss" aria-hidden="true"></i>Comparator</span>
+                      </div>
+                    </div>
+
+                    <div class="preference-rows">
+                      <div class="preference-row">
+                        <div class="preference-label">
+                          <strong>vs WSI-LLaVA</strong>
+                          <span>515 cases</span>
+                        </div>
+                        <div class="preference-visual">
+                          <div
+                            class="stacked-bar"
+                            style="--win: 89.32%; --tie: 6.80%; --loss: 3.88%"
+                            role="img"
+                            aria-label="Against WSI-LLaVA: the evaluated Stage 2 model was preferred in 460 cases, with 35 ties and WSI-LLaVA preferred in 20 cases."
+                          >
+                            <span class="bar-win"></span>
+                            <span class="bar-tie"></span>
+                            <span class="bar-loss"></span>
+                          </div>
+                          <div class="preference-counts" aria-hidden="true">
+                            <span><strong>460</strong> ours</span>
+                            <span><strong>35</strong> tie</span>
+                            <span><strong>20</strong> comparator</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="preference-row">
+                        <div class="preference-label">
+                          <strong>vs PRISM</strong>
+                          <span>186 cases</span>
+                        </div>
+                        <div class="preference-visual">
+                          <div
+                            class="stacked-bar"
+                            style="--win: 94.62%; --tie: 4.30%; --loss: 1.08%"
+                            role="img"
+                            aria-label="Against PRISM: the evaluated Stage 2 model was preferred in 176 cases, with 8 ties and PRISM preferred in 2 cases."
+                          >
+                            <span class="bar-win"></span>
+                            <span class="bar-tie"></span>
+                            <span class="bar-loss"></span>
+                          </div>
+                          <div class="preference-counts" aria-hidden="true">
+                            <span><strong>176</strong> ours</span>
+                            <span><strong>8</strong> tie</span>
+                            <span><strong>2</strong> comparator</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="preference-row">
+                        <div class="preference-label">
+                          <strong>vs HistoGPT<sup>*</sup></strong>
+                          <span>100 skin cases</span>
+                        </div>
+                        <div class="preference-visual">
+                          <div
+                            class="stacked-bar"
+                            style="--win: 8%; --tie: 16%; --loss: 76%"
+                            role="img"
+                            aria-label="Against HistoGPT on skin cases: the evaluated Stage 2 model was preferred in 8 cases, with 16 ties and HistoGPT preferred in 76 cases."
+                          >
+                            <span class="bar-win"></span>
+                            <span class="bar-tie"></span>
+                            <span class="bar-loss"></span>
+                          </div>
+                          <div class="preference-counts" aria-hidden="true">
+                            <span><strong>8</strong> ours</span>
+                            <span><strong>16</strong> tie</span>
+                            <span><strong>76</strong> comparator</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <p class="evidence-takeaway">
+                      Under these separate protocols, the evaluated Stage 2 model was more often preferred against WSI-LLaVA and PRISM; HistoGPT was more often preferred in the skin-only comparison.
+                    </p>
+                    <p class="evidence-footnote">
+                      <sup>*</sup>HistoGPT is specialized for dermatopathology and was evaluated only on skin cases. Counts are reported in the paper's AI-preference comparison table.
+                    </p>
+                  </section>
+
+                  <section class="evidence-card audit-card" aria-labelledby="audit-heading">
+                    <div class="evidence-card-heading">
+                      <div>
+                        <h4 id="audit-heading">Pathologist audit</h4>
+                        <p>67 overlapping skin cases · 0–5 composite scale</p>
+                      </div>
+                    </div>
+
+                    <div class="audit-scores" role="group" aria-label="Composite pathologist audit scores out of five">
+                      <div class="audit-score audit-score-ours">
+                        <div class="audit-score-label"><span>Ours</span><strong>2.49</strong></div>
+                        <div class="audit-meter" role="img" aria-label="Evaluated Stage 2 model composite score: 2.49 out of 5.">
+                          <span style="width: 49.8%"></span>
+                        </div>
+                      </div>
+                      <div class="audit-score audit-score-comparator">
+                        <div class="audit-score-label"><span>HistoGPT</span><strong>2.24</strong></div>
+                        <div class="audit-meter" role="img" aria-label="HistoGPT composite score: 2.24 out of 5.">
+                          <span style="width: 44.8%"></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="audit-secondary">
+                      <div>
+                        <span class="audit-secondary-label">Consistency / 3</span>
+                        <p><strong>0.85</strong> ours <span>vs</span> <strong>0.61</strong> HistoGPT</p>
+                      </div>
+                      <div>
+                        <span class="audit-secondary-label">Pairwise preference</span>
+                        <div class="audit-triplet" role="group" aria-label="Pathologist pairwise preference: evaluated Stage 2 model 20, tie 39, HistoGPT 8.">
+                          <span><strong>20</strong> ours</span>
+                          <span><strong>39</strong> tie</span>
+                          <span><strong>8</strong> HistoGPT</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <p class="audit-note">One senior certified pathologist; no significance test. The numerical difference should not be interpreted as clinical superiority.</p>
+                  </section>
+                </div>
+
+                <details class="evidence-method">
+                  <summary>How to read these comparisons</summary>
+                  <p>
+                    The AI comparisons use ChatGPT 5.4 to select the better output and score case agreement from 0 to 10, with different output constraints and reference targets: WSI-LLaVA and HistoGPT are compared against microscopic-protocol content, while PRISM is compared on diagnosis content. Preference is sensitive to report style and is not the same as diagnostic accuracy. The ≈93% cohort-composition figure refers to the full Stage 2 corpus. The pathologist audit covers one senior certified pathologist and 67 overlapping skin cases; no significance test was reported in the presentation.
+                  </p>
+                </details>
+
+                <p class="clinical-caveat">
+                  <strong>Research evidence, not clinical validation.</strong>
+                  Neither audited system is clinically adequate.
+                </p>
+              </div>
+            </div>
         </div>
       </section>
 

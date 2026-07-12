@@ -107,6 +107,8 @@ Scientific content should not drift independently of the paper and code.
 | Model components and training stages | Paper, `main/README.md`, `main/MODEL_CARD.md` |
 | Headline metrics | Paper Table 3, `main/configs/reported_results.json` |
 | Efficiency values | Paper Table 4 |
+| Evidence-audit preference counts | Current paper, AI-preference comparison table |
+| Pathologist-audit scores and limitations | Current paper, pathologist-audit table; DeLTA 2026 presentation slide 19/notes for the no-significance-test qualifier |
 | Architecture figure | `main/assets/paper_architecture.png` |
 | Training-data figure | Paper Figure 4 (`a_dataset_distribution.png`) |
 | Qualitative examples | Paper Figure 8 (`baseline_stage2_val_examples_histai_wsi_gt_pred.png`) |
@@ -122,6 +124,8 @@ The public page omits a model button because the documented Hugging Face endpoin
 The experiment owner must confirm the exact Stage 2 release configuration. Paper Table 3's headline values (`0.2495/0.1988/0.0525/0.3018`) reappear as the B1 prompt-repetition setting in Table 7, while Tables 11–12 report WSI-marker variants separately. The current `main/configs/stage2_main_paper.json` enables both prompt repetition and WSI markers. Do not relabel a marker result or change that config based on inference; reconcile the paper, config, and website with the experiment owner.
 
 Paper Figure 4 labels the Stage 2 total as `43,619` cases and the mixed group as `20,925`, while Table 2 reports `43,618` and `20,924`. The site preserves the published figure but deliberately avoids restating the conflicting Stage 2 total in prose. The paper owner should reconcile those source values before a future figure revision.
+
+The Results evidence audit is native HTML and CSS, not a pasted slide image. When updating it, keep the limitations ahead of the charts and update the visible counts, bar percentages, sample sizes, and accessible labels together. Preserve the comparator-specific protocols, HistoGPT skin-only qualifier, one-reader/no-significance-test limitation, and the statement that neither audited system is clinically adequate. The ≈93% composition note describes the full Stage 2 corpus, not the pathologist-audit subset. Ignore unrelated leftover slide objects that are not part of the stress-test content.
 
 ## 6. URL and asset rules
 
