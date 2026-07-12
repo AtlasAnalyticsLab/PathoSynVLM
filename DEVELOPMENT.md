@@ -115,6 +115,8 @@ Scientific content should not drift independently of the paper and code.
 
 When a paper version changes, compare the title, authors, abstract, venue, citation, claims, figures, and metrics before editing the page. Use the paper's wording for scientific claims; do not infer stronger claims from a single metric or qualitative example.
 
+The hero intentionally presents only the Paper, Code, and arXiv HTML links. Keep venue-acceptance messaging and a separate reproduction button off the public hero; the Quick Start section already links to the maintained paper pipeline.
+
 The public page omits a model button because the documented Hugging Face endpoint is not accessible without authentication. Add the button only after an unauthenticated request reaches the intended public model page.
 
 The experiment owner must confirm the exact Stage 2 release configuration. Paper Table 3's headline values (`0.2495/0.1988/0.0525/0.3018`) reappear as the B1 prompt-repetition setting in Table 7, while Tables 11–12 report WSI-marker variants separately. The current `main/configs/stage2_main_paper.json` enables both prompt repetition and WSI markers. Do not relabel a marker result or change that config based on inference; reconcile the paper, config, and website with the experiment owner.
@@ -124,6 +126,8 @@ Paper Figure 4 labels the Stage 2 total as `43,619` cases and the mixed group as
 ## 6. URL and asset rules
 
 - Use relative paths such as `static/images/figure.png` in `index.html`. GitHub hosts this project below `/PathoSynVLM/`, not at the domain root.
+- Keep the header's lab link pointed at the canonical Atlas Analytics Lab site: `https://atlasanalyticslab.github.io/`.
+- Header section links must target existing IDs in `index.html`. When changing the header, test the mobile menu, outside-click close, Escape close, and sticky-anchor offset at 320 px and desktop widths.
 - The root-relative links in `404.html` are an intentional exception because a 404 can be served from an arbitrary nested URL.
 - Use HTTPS for every external link.
 - Prefer first-party, local assets. Remote styles, fonts, and scripts add availability and supply-chain risk.

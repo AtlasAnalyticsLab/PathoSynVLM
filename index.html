@@ -57,64 +57,84 @@
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
 
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="site-brand" href="./" aria-label="PathoSynVLM home">
+          <span class="brand-mark" aria-hidden="true">PS</span>
+          <span>PathoSynVLM</span>
+        </a>
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-navigation"
+        >
+          <span class="nav-toggle-icon" aria-hidden="true"></span>
+          <span>Menu</span>
+        </button>
+        <nav class="site-nav" id="site-navigation" aria-label="Primary navigation">
+          <a href="#abstract">Overview</a>
+          <a href="#method">Method</a>
+          <a href="#data">Data</a>
+          <a href="#results">Results</a>
+          <a href="#citation">Citation</a>
+          <a class="lab-link" href="https://atlasanalyticslab.github.io/">Atlas Analytics Lab <span aria-hidden="true">↗</span></a>
+        </nav>
+      </div>
+    </header>
+
     <main id="main-content">
       <!-- Hero -->
       <section class="section hero-section">
-        <div class="container hero-container">
-          <h1 class="hero-title">PathoSynVLM</h1>
-          <p class="hero-subtitle">
-            Simple Token-Efficient Vision-Language Model for Case-level Pathology Synoptic Report Generation
-          </p>
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="hero-eyebrow">Case-level computational pathology</p>
+            <h1 class="hero-title">PathoSynVLM</h1>
+            <p class="hero-subtitle">
+              Simple Token-Efficient Vision-Language Model for Case-level Pathology Synoptic Report Generation
+            </p>
 
-          <p class="author-list">
-            <a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Yang%2C+Z">Zhiyuan Yang<sup>*</sup></a>,
-            <a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Cheng%2C+J">Jiahao Cheng<sup>*</sup></a>,
-            <a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Trinh%2C+V+Q">Vincent Quoc-Huy Trinh</a>,
-            <a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Hosseini%2C+M+S">Mahdi S. Hosseini</a>
-          </p>
-          <p class="equal-note"><sup>*</sup> Equal contribution</p>
-          <p class="affiliation-list">
-            CSSE, Concordia University, Montréal, Canada &ensp;·&ensp;
-            Centre de recherche du CHUM, Université de Montréal, Montréal, Canada &ensp;·&ensp;
-            IRIC, Université de Montréal, Montréal, Canada &ensp;·&ensp;
-            Mila – Québec AI Institute, Montréal, Canada
-          </p>
-          <p class="venue-line">
-            <a href="https://arxiv.org/abs/2605.30716">🏆 Accepted at DeLTA 2026</a>
-          </p>
+            <p class="author-list">
+              <a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Yang%2C+Z">Zhiyuan Yang<sup>*</sup></a>,
+              <a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Cheng%2C+J">Jiahao Cheng<sup>*</sup></a>,
+              <a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Trinh%2C+V+Q">Vincent Quoc-Huy Trinh</a>,
+              <a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Hosseini%2C+M+S">Mahdi S. Hosseini</a>
+            </p>
+            <p class="equal-note"><sup>*</sup> Equal contribution</p>
+            <p class="affiliation-list">
+              CSSE, Concordia University, Montréal, Canada &ensp;·&ensp;
+              Centre de recherche du CHUM, Université de Montréal, Montréal, Canada &ensp;·&ensp;
+              IRIC, Université de Montréal, Montréal, Canada &ensp;·&ensp;
+              Mila – Québec AI Institute, Montréal, Canada
+            </p>
 
-          <nav class="link-row" aria-label="Project links">
-            <a href="https://arxiv.org/abs/2605.30716">📄 Paper</a>
-            <a href="https://github.com/AtlasAnalyticsLab/PathoSynVLM">💻 Code</a>
-            <a href="https://arxiv.org/html/2605.30716v1">🌐 HTML</a>
-            <a href="https://github.com/AtlasAnalyticsLab/PathoSynVLM/blob/main/docs/paper_pipeline.md">🧪 Reproduce</a>
-          </nav>
+            <nav class="link-row" aria-label="Project links">
+              <a href="https://arxiv.org/abs/2605.30716">📄 Paper</a>
+              <a href="https://github.com/AtlasAnalyticsLab/PathoSynVLM">💻 Code</a>
+              <a href="https://arxiv.org/html/2605.30716v1">🌐 HTML</a>
+            </nav>
+          </div>
+
+          <aside class="hero-stats" aria-label="Key project characteristics">
+            <div class="stat-card">
+              <span class="stat-number">Up to 64×</span>
+              <span class="stat-label">shorter visual sequences</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">40 GB</span>
+              <span class="stat-label">training VRAM</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">3B</span>
+              <span class="stat-label">Qwen2.5 decoder</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">Multi-WSI</span>
+              <span class="stat-label">case-level generation</span>
+            </div>
+          </aside>
         </div>
       </section>
-
-      <!-- Key numbers -->
-      <section class="stats-section" aria-label="Key project characteristics">
-        <div class="container stat-cards">
-          <div class="stat-card">
-            <span class="stat-number">Up to 64×</span>
-            <span class="stat-label">shorter visual sequences</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-number">40 GB</span>
-            <span class="stat-label">training VRAM</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-number">3B</span>
-            <span class="stat-label">Qwen2.5 decoder</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-number">Multi-WSI</span>
-            <span class="stat-label">case-level generation</span>
-          </div>
-        </div>
-      </section>
-
-      <hr class="section-divider">
 
       <!-- Quick start -->
       <section class="section" id="quick-start">
@@ -416,6 +436,7 @@ Conclusion: ...</code></pre>
       <div class="container footer-content">
         <p>
           PathoSynVLM ·
+          <a href="https://atlasanalyticslab.github.io/">Atlas Analytics Lab</a> ·
           <a href="https://github.com/AtlasAnalyticsLab/PathoSynVLM">Code</a> ·
           <a href="https://arxiv.org/abs/2605.30716">Paper</a> ·
           <a href="https://github.com/AtlasAnalyticsLab/PathoSynVLM/blob/main/LICENSE">CC BY-NC-SA 4.0</a>

@@ -1,6 +1,40 @@
 (() => {
   "use strict";
 
+  const navToggle = document.querySelector(".nav-toggle");
+  const siteNav = document.querySelector("#site-navigation");
+
+  const closeNavigation = () => {
+    navToggle?.setAttribute("aria-expanded", "false");
+    siteNav?.classList.remove("is-open");
+  };
+
+  navToggle?.addEventListener("click", () => {
+    const willOpen = navToggle.getAttribute("aria-expanded") !== "true";
+    navToggle.setAttribute("aria-expanded", String(willOpen));
+    siteNav?.classList.toggle("is-open", willOpen);
+  });
+
+  siteNav?.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", closeNavigation);
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!siteNav?.classList.contains("is-open")) return;
+    if (siteNav.contains(event.target) || navToggle?.contains(event.target)) return;
+    closeNavigation();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || !siteNav?.classList.contains("is-open")) return;
+    closeNavigation();
+    navToggle?.focus();
+  });
+
+  window.matchMedia("(min-width: 821px)").addEventListener("change", (event) => {
+    if (event.matches) closeNavigation();
+  });
+
   const tabs = Array.from(document.querySelectorAll("[role='tab']"));
 
   const activateTab = (tab, moveFocus = true) => {
