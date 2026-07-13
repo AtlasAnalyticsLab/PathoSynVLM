@@ -296,7 +296,7 @@ python scripts/evaluate_checkpoint.py \
   --output_json "$PATHOSYNVLM_RUNS_ROOT/stage2_main/eval_histai.json"
 ```
 
-Full paper-aligned reference settings are stored in [configs/](configs), and the detailed run guide is in [docs/paper_pipeline.md](docs/paper_pipeline.md).
+The consolidated Stage 1, Stage 2, evaluation, and inference settings are recorded in [configs/paper_hyperparameters.json](configs/paper_hyperparameters.json). The launcher-oriented configs remain in [configs/](configs), and the detailed run guide is in [docs/paper_pipeline.md](docs/paper_pipeline.md).
 Path fields in the JSON configs use `$PATHOSYNVLM_*` notation to show the intended roots; the training scripts do not read these JSON files automatically, so expand or replace those strings if you feed the JSON into your own launcher.
 
 ## Repository Map
@@ -345,7 +345,6 @@ export PYTHONNOUSERSITE=1
 - `PathText` support remains as an optional compatibility path, but the Stage 1 default is HistGen + REG2025.
 - The WSI-marker ablation settings are summarized in [configs/stage2_wsi_marker_ablation.json](configs/stage2_wsi_marker_ablation.json).
 - Raw WSIs, extracted H5 embeddings, checkpoints, and released weights are intentionally kept outside Git.
-- The project website source and its validation-and-deployment workflow live on the independent orphan [`gh-pages`](https://github.com/AtlasAnalyticsLab/PathoSynVLM/tree/gh-pages) branch. That workflow publishes a curated static artifact to GitHub Pages. Keeping the site out of `main` ensures the default code working tree does not also contain website files, and website maintenance is documented on the site branch.
 
 ## Citation
 
