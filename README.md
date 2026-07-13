@@ -44,6 +44,7 @@ Project page: https://atlasanalyticslab.github.io/PathoSynVLM/
 - [Repository Map](#repository-map)
 - [Runtime Notes](#runtime-notes)
 - [Optional SLURM Jobs](#optional-slurm-jobs)
+- [Acknowledgments](#acknowledgments)
 - [Notes From The Authors](#notes-from-the-authors)
 - [Citation](#citation)
 - [License](#license)
@@ -338,6 +339,10 @@ srun --pty bash -l
 conda activate pathosynvlm
 export PYTHONNOUSERSITE=1
 ```
+
+## Acknowledgments
+
+[OpenAI Codex](https://openai.com/codex/) was used to assist with repository documentation, project-website implementation, GitHub Pages automation, asset preparation, configuration auditing, and maintenance. All AI-assisted changes were directed and reviewed by the project maintainers.
 
 ## Notes From The Authors
 
