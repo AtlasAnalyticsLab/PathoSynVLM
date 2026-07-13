@@ -159,11 +159,11 @@ The Results evidence audit is native HTML and CSS, not a pasted slide image. Pre
 - The `validate` job grants only `contents: read` and runs the dependency-free validator.
 - The `deploy` job runs only for pushes, depends on successful validation, and receives the minimum `contents: read`, `pages: write`, and `id-token: write` permissions required by GitHub Pages.
 - The deploy job stages `index.html`, `404.html`, `.nojekyll`, `robots.txt`, `sitemap.xml`, and `static/` into `_site`. Only that temporary directory is uploaded as the Pages artifact.
-- After a successful push deployment, the `cleanup` job receives only `actions: write` and permanently deletes superseded completed runs of this same workflow. The current in-progress run remains and becomes the single retained run when it completes.
+- Every trigger remains as an individual Actions run record. The workflow has no `actions: write` permission and contains no job or API call that deletes run history.
 
 The workflow pins immutable commits for `actions/checkout`, `actions/configure-pages`, `actions/upload-pages-artifact`, and `actions/deploy-pages`. When updating an action, verify its release in the official repository, replace the full commit SHA, update the version comment, and review its release notes.
 
-GitHub must add a new run record whenever the workflow is triggered; this does not create another workflow definition. After a successful deployment, the cleanup job removes older completed records. Failed deployments remain available for diagnosis until a later successful deployment performs cleanup. If a separate `pages build and deployment` run appears for the same SHA, the Pages source is still set to branch publishing; change it to **GitHub Actions**.
+GitHub must add a new run record whenever the workflow is triggered; this does not create another workflow definition. Multiple `PathoSynVLM website` rows are the expected validation and deployment history and must not be deleted. Workflow logs follow **Settings → Actions → General → Artifact and log retention**; for a public repository, GitHub currently permits at most 90 days. If a separate `pages build and deployment` workflow appears for the same SHA, the Pages source is still set to branch publishing; change it to **GitHub Actions**.
 
 ## 8. Troubleshooting
 
@@ -171,7 +171,8 @@ GitHub must add a new run record whenever the workflow is triggered; this does n
 |---|---|---|
 | `configure-pages` says the site is not configured for workflows | Pages still uses branch publishing or is disabled | Set **Settings → Pages → Source** to **GitHub Actions**, then rerun or push a follow-up commit |
 | A separate `pages build and deployment` run appears | Pages still uses **Deploy from a branch** | Switch the Pages source to **GitHub Actions** so `PathoSynVLM website` is the only publisher |
-| Multiple rows named `PathoSynVLM website` remain after a successful deployment | The cleanup job failed or its token could not use `actions: write` | Open the latest run and inspect `Remove superseded website runs`; confirm repository policy permits the job-level permission |
+| Earlier website run records are missing | A run was deleted manually or by automation | Do not delete workflow runs and remove any run-deletion automation; deleted run pages cannot be restored, although the organization audit log, Deployments history, and Git history may retain partial evidence |
+| Logs are unavailable on an older retained run | They expired under repository retention settings | For future runs, set **Settings → Actions → General → Artifact and log retention** to the desired value, up to the public-repository maximum |
 | Validation passes but CSS/images are missing | A project-site path was changed to a domain-root path | Restore relative paths and run the validator |
 | Production shows an older revision | The deploy job failed, is awaiting environment approval, or edge caching has not expired | Check the latest `PathoSynVLM website` run and allow several minutes after success |
 | The model link prompts for authentication | The model repository is private or gated | Keep the public model button absent until release policy changes |
