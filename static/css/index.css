@@ -1112,6 +1112,13 @@ select {
   line-height: 1.8;
 }
 
+.citation-entry {
+  margin: -0.25rem 0 1.4rem;
+  color: var(--text-secondary);
+  font-size: 0.96rem;
+  line-height: 1.75;
+}
+
 .bibtex-block {
   position: relative;
   padding: 1rem 1.2rem 0.55rem;

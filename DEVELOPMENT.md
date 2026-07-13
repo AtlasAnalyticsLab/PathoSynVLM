@@ -103,7 +103,7 @@ Scientific content should not drift independently of the paper and code.
 
 | Website content | Primary source |
 |---|---|
-| Title, authors, abstract, venue status | arXiv record `2605.30716` |
+| Title, authors, and abstract | Current paper and arXiv record `2605.30716` |
 | Model components and training stages | Paper, `main/README.md`, `main/MODEL_CARD.md` |
 | Headline metrics | Paper Table 3, `main/configs/reported_results.json` |
 | Efficiency values | Paper Table 4 |
@@ -113,7 +113,7 @@ Scientific content should not drift independently of the paper and code.
 | Training-data figure | Paper Figure 4 (`a_dataset_distribution.png`) |
 | Qualitative examples | Paper Figure 8 (`baseline_stage2_val_examples_histai_wsi_gt_pred.png`) |
 | Commands and reproduction links | `main/docs/paper_pipeline.md` |
-| Citation | arXiv record and `main/README.md` |
+| Citation | Published DeLTA 2026 proceedings citation and `main/README.md` |
 
 When a paper version changes, compare the title, authors, abstract, venue, citation, claims, figures, and metrics before editing the page. Use the paper's wording for scientific claims; do not infer stronger claims from a single metric or qualitative example.
 
