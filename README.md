@@ -20,7 +20,7 @@ Code and model-release utilities for:
 
 > **Simple Token-Efficient Vision-Language Model for Case-level Pathology Synoptic Report Generation**  
 > Zhiyuan Yang, Jiahao Cheng, Vincent Quoc-Huy Trinh, Mahdi S. Hosseini  
-> arXiv:2605.30716
+> *Proceedings of the 7th International Conference on Deep Learning Theory and Applications*, 2026, pp. 514–537
 
 Paper: https://arxiv.org/abs/2605.30716
 
@@ -353,15 +353,16 @@ export PYTHONNOUSERSITE=1
 
 ## Citation
 
+Yang, Z.; Cheng, J.; Trinh, V. Q.-H. and Hosseini, M. S. (2026). **Simple Token-Efficient Vision-Language Model for Case-Level Pathology Synoptic Report Generation.** In *Proceedings of the 7th International Conference on Deep Learning Theory and Applications*, ISSN 2184-9277, pages 514–537.
+
 ```bibtex
-@misc{yang2026simpletokenefficientvisionlanguage,
-  title={Simple Token-Efficient Vision-Language Model for Case-level Pathology Synoptic Report Generation},
-  author={Zhiyuan Yang and Jiahao Cheng and Vincent Quoc-Huy Trinh and Mahdi S. Hosseini},
-  year={2026},
-  eprint={2605.30716},
-  archivePrefix={arXiv},
-  primaryClass={cs.CV},
-  url={https://arxiv.org/abs/2605.30716}
+@inproceedings{yang2026simpletokenvlm,
+  title     = {Simple Token-Efficient Vision-Language Model for Case-Level Pathology Synoptic Report Generation},
+  author    = {Yang, Zhiyuan and Cheng, Jiahao and Trinh, Vincent Quoc-Huy and Hosseini, Mahdi S.},
+  booktitle = {Proceedings of the 7th International Conference on Deep Learning Theory and Applications},
+  pages     = {514--537},
+  year      = {2026},
+  issn      = {2184-9277}
 }
 ```
 
