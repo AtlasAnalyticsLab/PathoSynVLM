@@ -55,8 +55,9 @@ $PATHOSYNVLM_STAGE1_METADATA_DIR/merged_metadata_3datasets_filtered_conch_v15_st
 
 Stage 2 trains on case-report pairs from HISTAI:
 
-- GitHub: https://github.com/HistAI/HISTAI
-- Hugging Face collection: https://huggingface.co/collections/histai/histai-whole-slide-images-dataset
+- Hugging Face metadata and WSI access: https://huggingface.co/datasets/histai/HISTAI-metadata
+- Hugging Face WSI collection: https://huggingface.co/collections/histai/histai-whole-slide-images-dataset
+- Source documentation: https://github.com/HistAI/HISTAI
 
 Expected raw metadata:
 

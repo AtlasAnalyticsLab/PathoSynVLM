@@ -1,6 +1,6 @@
 # PathoSynVLM Model Card
 
-[Paper](https://arxiv.org/abs/2605.30716) | [Code](https://github.com/AtlasAnalyticsLab/PathoSynVLM) | [Model weights](https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM) | [Project page](https://atlasanalyticslab.github.io/PathoSynVLM/)
+[Paper](https://arxiv.org/abs/2605.30716) | [Code](https://github.com/AtlasAnalyticsLab/PathoSynVLM) | [Model weights](https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM) | [Training data](https://huggingface.co/datasets/histai/HISTAI-metadata) | [Project page](https://atlasanalyticslab.github.io/PathoSynVLM/)
 
 ## Model
 
@@ -30,9 +30,9 @@ This model is not a clinical diagnostic device and should not be used for patien
 The paper-relevant pipeline uses:
 
 - Stage 1: HistGen + REG2025
-- Stage 2: HISTAI case-report pairs
+- Stage 2: [HISTAI case-report pairs](https://huggingface.co/datasets/histai/HISTAI-metadata)
 
-Users are responsible for following each dataset's access terms and redistribution rules.
+The official HISTAI metadata repository links to its organ-specific WSI repositories. See the [HISTAI source documentation](https://github.com/HistAI/HISTAI) for dataset structure, access instructions, licensing, and citation. Users are responsible for following each dataset's access terms and redistribution rules.
 
 ## Released Weights
 

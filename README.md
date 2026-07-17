@@ -217,7 +217,7 @@ Expected data sources:
 
 - HistGen: https://github.com/dddavid4real/HistGen and https://huggingface.co/datasets/david4real/HistGen
 - REG2025: https://reg2025.grand-challenge.org/
-- HISTAI: https://github.com/HistAI/HISTAI
+- HISTAI: [metadata and WSI access](https://huggingface.co/datasets/histai/HISTAI-metadata) and [source documentation](https://github.com/HistAI/HISTAI)
 
 Expected layout under the configured roots:
 

@@ -72,6 +72,7 @@ def _model_card(
         - qwen2.5
         datasets:
         - david4real/HistGen
+        - histai/HISTAI-metadata
         metrics:
         - rouge
         - meteor
@@ -86,7 +87,7 @@ def _model_card(
               name: Case-level pathology synoptic report generation
             dataset:
               name: HISTAI case-report pairs
-              type: HISTAI
+              type: histai/HISTAI-metadata
             metrics:
             - type: rouge
               name: ROUGE-L
@@ -107,6 +108,7 @@ def _model_card(
         [![Paper](https://img.shields.io/badge/Paper-arXiv-b31b1b.svg)](https://arxiv.org/abs/2605.30716)
         [![Code](https://img.shields.io/badge/Code-GitHub-181717.svg)]({github_url})
         [![Project Page](https://img.shields.io/badge/Project-Page-0e8a9c.svg)](https://atlasanalyticslab.github.io/PathoSynVLM/)
+        [![Training Data](https://img.shields.io/badge/Training_Data-HISTAI-ffd21e.svg)](https://huggingface.co/datasets/histai/HISTAI-metadata)
 
         PathoSynVLM is a token-efficient vision-language model for generating
         case-level pathology synoptic reports from one or more whole-slide
@@ -229,6 +231,18 @@ def _model_card(
         and evaluation. Machine-readable paper configurations and reported values
         are maintained in the same code repository.
 
+        ## Training Data
+
+        The released Stage 2 checkpoint was fine-tuned on case-report pairs from
+        [HISTAI](https://huggingface.co/datasets/histai/HISTAI-metadata). The
+        official metadata repository is the starting point for dataset access and
+        links to the organ-specific WSI repositories used by HISTAI. See the
+        [HISTAI source documentation](https://github.com/HistAI/HISTAI) for the
+        dataset structure, subsets, citation, and access instructions.
+
+        HISTAI data remain subject to the dataset's CC BY-NC 4.0 license and
+        current access requirements.
+
         ## Training Recipe
 
         - Stage 1: train the two-layer MLP aligner on HistGen + REG2025 while
@@ -301,7 +315,7 @@ def _model_index(reported_results: dict[str, Any]) -> dict[str, Any]:
                 },
                 "dataset": {
                     "name": "HISTAI case-report pairs",
-                    "type": "HISTAI",
+                    "type": "histai/HISTAI-metadata",
                 },
                 "metrics": [
                     {"type": "rouge", "name": "ROUGE-L", "value": stage2.get("rougeL")},
