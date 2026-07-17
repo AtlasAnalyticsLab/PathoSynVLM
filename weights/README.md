@@ -2,7 +2,9 @@
 
 Large model artifacts are not committed to Git.
 
-For normal inference, users should download the released model artifact into this directory. They should not need to run `scripts/export_release_weights.py` unless they are packaging their own trained checkpoint.
+Official model repository: [AtlasAnalyticsLab/PathoSynVLM](https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM).
+
+For normal inference, users should download that released model package into this directory. They should not need to run `scripts/export_release_weights.py` unless they are packaging their own trained checkpoint.
 
 Expected inference package layout:
 

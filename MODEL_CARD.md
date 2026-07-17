@@ -1,5 +1,7 @@
 # PathoSynVLM Model Card
 
+[Paper](https://arxiv.org/abs/2605.30716) | [Code](https://github.com/AtlasAnalyticsLab/PathoSynVLM) | [Model weights](https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM) | [Project page](https://atlasanalyticslab.github.io/PathoSynVLM/)
+
 ## Model
 
 PathoSynVLM is a token-efficient vision-language model for case-level pathology synoptic report generation.

@@ -2,6 +2,8 @@
 
 PathoSynVLM has code in Git and model artifacts outside Git.
 
+Official model repository: [AtlasAnalyticsLab/PathoSynVLM](https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM).
+
 The intended user experience is:
 
 1. The trained Stage 2 model is exported once into the inference layout below.
@@ -35,8 +37,6 @@ source configs/paths.example.env
 hf download "$PATHOSYNVLM_HF_REPO" \
   --local-dir "$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main"
 ```
-
-If the release is hosted somewhere other than Hugging Face, download and unpack it so that `$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main/config.json` exists.
 
 The prepared Hugging Face upload root is the model repository itself: it contains the real `llm/model.safetensors` and `vlm_state.pt` files, not symlinks or pointer files. See [docs/huggingface_release.md](huggingface_release.md) for the exact upload-root validation steps.
 

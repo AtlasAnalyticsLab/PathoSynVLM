@@ -104,45 +104,46 @@ def _model_card(
 
         # PathoSynVLM: Case-Level Pathology Synoptic Report Generation
 
+        [![Paper](https://img.shields.io/badge/Paper-arXiv-b31b1b.svg)](https://arxiv.org/abs/2605.30716)
+        [![Code](https://img.shields.io/badge/Code-GitHub-181717.svg)]({github_url})
+        [![Project Page](https://img.shields.io/badge/Project-Page-0e8a9c.svg)](https://atlasanalyticslab.github.io/PathoSynVLM/)
+
         PathoSynVLM is a token-efficient vision-language model for generating
         case-level pathology synoptic reports from one or more whole-slide
         images represented as precomputed CONCHv1.5 patch embeddings.
 
-        Paper: [Simple Token-Efficient Vision-Language Model for Case-level
-        Pathology Synoptic Report Generation](https://arxiv.org/abs/2605.30716)
+        **Code and complete documentation:** [{github_url}]({github_url})
 
-        Code: [{github_url}]({github_url})
-
-        Model: [https://huggingface.co/{repo_id}](https://huggingface.co/{repo_id})
+        This repository provides the trained model package. Use it with the
+        PathoSynVLM code repository for embedding preparation, case-level
+        inference, evaluation, and training.
 
         ![PathoSynVLM architecture](assets/paper_architecture.png)
 
         ## What This Repository Contains
 
-        This Hugging Face repository contains the exported Stage 2 PathoSynVLM
-        model package:
-
-        ```text
-        README.md
-        LICENSE
-        model_index.json
-        config.json
-        vlm_state.pt
-        labels.json
-        tokenizer/
-        llm/
-        best_checkpoint_summary.json
-        assets/
-        examples/
-        ```
+        | Path | Purpose |
+        |---|---|
+        | `llm/model.safetensors` | Merged language-model weights for the selected Stage 2 checkpoint. |
+        | `vlm_state.pt` | Vision-language aligner, WSI marker, and WSI index tensors. |
+        | `tokenizer/` | Tokenizer configuration and chat template used for inference. |
+        | `config.json` | PathoSynVLM architecture and inference settings. |
+        | `labels.json` | Input contract and generated report-field schema. |
+        | `best_checkpoint_summary.json` | Selected checkpoint and validation summary. |
+        | `model_index.json` | Machine-readable task, dataset, and metric metadata. |
+        | `examples/` | Example case-level input manifest. |
 
         The paper run used `unfreeze_llm_base=true`, so the release package
         includes the merged/full language-model weights under `llm/`, not only a
         LoRA adapter.
 
-        ## Quickstart
+        ## Quick Start
 
-        Install the code repository:
+        The release is loaded through the PathoSynVLM inference code rather than
+        directly through `transformers.AutoModel`. A CUDA-capable GPU is
+        recommended for normal use; CPU execution is intended for smoke tests.
+
+        ### 1. Install the code
 
         ```bash
         git clone {github_url} PathoSynVLM
@@ -153,25 +154,34 @@ def _model_card(
         pip install -e .
         ```
 
-        Download this model repository:
+        ### 2. Download the model
 
         ```bash
         source configs/paths.example.env
-        hf download {repo_id} --local-dir "$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main"
+        hf download {repo_id} \\
+          --local-dir "$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main"
         ```
 
-        Generate a case-level report from one or more slide embedding files:
+        ### 3. Generate a report for one case
+
+        Pass every WSI embedding file belonging to the case in the desired slide
+        order:
 
         ```bash
+        # Optional when the paths below are relative.
+        export PATHOSYNVLM_EMBEDDINGS_ROOT=/path/to/conch_v15/embeddings
+
         python scripts/generate_case_report.py \\
-          --embeddings slide_1.h5 slide_2.h5 \\
+          --embeddings case_001/slide_1.h5 case_001/slide_2.h5 \\
           --output_json report.json
         ```
 
         Relative `--embeddings` paths are resolved under
-        `PATHOSYNVLM_EMBEDDINGS_ROOT`. Absolute `.h5` paths also work.
+        `PATHOSYNVLM_EMBEDDINGS_ROOT`; absolute `.h5` paths work without setting
+        that variable. The JSON output records the generated report, resolved
+        slide paths, per-WSI patch counts, and feature key.
 
-        The output follows:
+        Generated report text follows:
 
         ```text
         Diagnosis: ...
@@ -188,8 +198,10 @@ def _model_card(
         /features/conch_v15  # shape: (num_patches, 768)
         ```
 
-        Use the code repository docs for dataset placement, metadata filtering,
-        and embedding generation details.
+        See the GitHub [embedding guide]({github_url}/blob/main/docs/embeddings.md)
+        for patch extraction, feature generation, H5 validation, and configurable
+        storage paths. Dataset placement and access requirements are documented in
+        the [data guide]({github_url}/blob/main/docs/data.md).
 
         ### From Precomputed H5 Feature Files
 
@@ -206,31 +218,22 @@ def _model_card(
 
         First extract tissue patches and CONCHv1.5 patch embeddings using a WSI
         preprocessing pipeline that writes the H5 layout above. Then pass the
-        resulting H5 files to `scripts/generate_case_report.py`.
+        resulting H5 files to `scripts/generate_case_report.py`. PathoSynVLM does
+        not send raw WSI pixels directly to the language model.
 
-        ## Running The Paper Pipeline
+        ## Running the Paper Pipeline
 
-        To rerun training and evaluation, follow the code repository guide:
-
-        ```bash
-        git clone {github_url} PathoSynVLM
-        cd PathoSynVLM
-        export PYTHONNOUSERSITE=1
-        pip install -e .
-
-        # 1. Download HistGen, REG2025, and HISTAI metadata/WSIs.
-        # 2. Extract CONCHv1.5 H5 patch embeddings.
-        # 3. Prepare Stage 1 and Stage 2 metadata.
-        # 4. Train Stage 1 alignment.
-        # 5. Train Stage 2 HISTAI report generation.
-        # 6. Evaluate with scripts/evaluate_checkpoint.py.
-        ```
+        Follow the GitHub [paper pipeline]({github_url}/blob/main/docs/paper_pipeline.md)
+        for the complete sequence: dataset setup, CONCHv1.5 embedding generation,
+        metadata preparation, Stage 1 alignment, Stage 2 case-level fine-tuning,
+        and evaluation. Machine-readable paper configurations and reported values
+        are maintained in the same code repository.
 
         ## Training Recipe
 
         - Stage 1: train the two-layer MLP aligner on HistGen + REG2025 while
           keeping the CONCHv1.5 patch encoder and LLM frozen.
-        - Stage 2: finetune on HISTAI case-report pairs with WSI marker tokens.
+        - Stage 2: fine-tune on HISTAI case-report pairs with WSI marker tokens.
 
         Checkpoint selected for release:
 

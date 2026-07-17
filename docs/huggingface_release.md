@@ -1,6 +1,6 @@
 # Hugging Face Release
 
-This document describes how to refresh and validate the Hugging Face model repository files for PathoSynVLM.
+This document describes how to refresh and validate the files published at [AtlasAnalyticsLab/PathoSynVLM](https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM).
 
 ## Release Root
 
@@ -79,7 +79,10 @@ The symlink check should print `0`; upload only real files.
 
 Upload the prepared release root:
 
+Authenticate with a Hugging Face user access token that has write permission for `AtlasAnalyticsLab/PathoSynVLM`, then run:
+
 ```bash
+hf auth whoami
 hf repos create "$PATHOSYNVLM_HF_REPO" --type model --exist-ok
 hf upload-large-folder "$PATHOSYNVLM_HF_REPO" "$PATHOSYNVLM_HF_ROOT" --type model
 ```

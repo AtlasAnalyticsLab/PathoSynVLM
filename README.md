@@ -4,7 +4,7 @@
 [![Project Page](https://img.shields.io/badge/Project-Page-0e8a9c.svg)](https://atlasanalyticslab.github.io/PathoSynVLM/)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776ab.svg)](https://www.python.org/)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey.svg)](LICENSE)
-[![Model weights](https://img.shields.io/badge/model_weights-Hugging_Face-blue.svg)](https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM)
+[![Model](https://img.shields.io/badge/Model-Hugging_Face-ff9d00.svg)](https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM)
 
 ![PathoSynVLM architecture from the paper](assets/paper_architecture.png)
 
@@ -26,7 +26,7 @@ Paper: https://arxiv.org/abs/2605.30716
 
 Project page: https://atlasanalyticslab.github.io/PathoSynVLM/
 
-Model weights: https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM
+Model weights: [AtlasAnalyticsLab/PathoSynVLM](https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM)
 
 ## News
 
@@ -74,7 +74,7 @@ pip install -e .
 
 This is the path for users who want to generate reports without retraining.
 
-Model weights are distributed separately from Git. Download the released weight package into:
+The official model package is hosted at [AtlasAnalyticsLab/PathoSynVLM](https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM). Download it into:
 
 ```text
 $PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main/
@@ -91,7 +91,7 @@ $PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main/
   best_checkpoint_summary.json
 ```
 
-Download from Hugging Face:
+Download directly from [Hugging Face](https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM):
 
 ```bash
 source configs/paths.example.env
@@ -149,7 +149,7 @@ python scripts/export_release_weights.py \
 Read [docs/weights.md](docs/weights.md) for the download/export distinction.
 The Hugging Face upload root and validation steps are in [docs/huggingface_release.md](docs/huggingface_release.md).
 
-The release model card is in [MODEL_CARD.md](MODEL_CARD.md).
+The live model card and downloadable files are available in the [Hugging Face model repository](https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM). A code-repository model summary is also maintained in [MODEL_CARD.md](MODEL_CARD.md).
 
 ## Configure Local Paths
 
