@@ -108,7 +108,6 @@ def _model_card(
         [![Paper](https://img.shields.io/badge/Paper-arXiv-b31b1b.svg)](https://arxiv.org/abs/2605.30716)
         [![Code](https://img.shields.io/badge/Code-GitHub-181717.svg)]({github_url})
         [![Project Page](https://img.shields.io/badge/Project-Page-0e8a9c.svg)](https://atlasanalyticslab.github.io/PathoSynVLM/)
-        [![Training Data](https://img.shields.io/badge/Training_Data-HISTAI-ffd21e.svg)](https://huggingface.co/datasets/histai/HISTAI-metadata)
 
         PathoSynVLM is a token-efficient vision-language model for generating
         case-level pathology synoptic reports from one or more whole-slide
