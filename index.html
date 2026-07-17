@@ -44,7 +44,8 @@
         "mainEntityOfPage": "https://atlasanalyticslab.github.io/PathoSynVLM/",
         "sameAs": [
           "https://arxiv.org/abs/2605.30716",
-          "https://github.com/AtlasAnalyticsLab/PathoSynVLM"
+          "https://github.com/AtlasAnalyticsLab/PathoSynVLM",
+          "https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM"
         ],
         "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
       }
@@ -111,6 +112,7 @@
             <nav class="link-row" aria-label="Project links">
               <a href="https://arxiv.org/abs/2605.30716">📄 Paper</a>
               <a href="https://github.com/AtlasAnalyticsLab/PathoSynVLM">💻 Code</a>
+              <a href="https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM">Model weights</a>
             </nav>
           </div>
 
@@ -144,13 +146,23 @@ git clone https://github.com/AtlasAnalyticsLab/PathoSynVLM
 cd PathoSynVLM
 conda create -n pathosynvlm python=3.11 -y
 conda activate pathosynvlm
+export PYTHONNOUSERSITE=1
 pip install -e .
 
-<span class="comment"># inspect the multi-WSI report-generation entry point</span>
-python scripts/generate_case_report.py --help</code></pre>
+<span class="comment"># download the model package</span>
+source configs/paths.example.env
+hf download AtlasAnalyticsLab/PathoSynVLM \
+  --local-dir "$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main"
+
+<span class="comment"># generate one report from all WSIs in a case</span>
+python scripts/generate_case_report.py \
+  --embeddings HISTAI-skin-b2/conch_v15/5x_512/patches/example_1.h5 \
+               HISTAI-skin-b2/conch_v15/5x_512/patches/example_2.h5 \
+  --output_json report.json</code></pre>
           <p class="center-note">
-            Inference requires prepared CONCHv1.5 H5 embeddings and a local weight package.
-            Follow the <a href="https://github.com/AtlasAnalyticsLab/PathoSynVLM/blob/main/docs/paper_pipeline.md">paper pipeline</a> for data, training, and evaluation.
+            Replace the example paths with the CONCHv1.5 H5 embedding files for one case.
+            See the <a href="https://github.com/AtlasAnalyticsLab/PathoSynVLM/blob/main/docs/embeddings.md">embedding guide</a>
+            and <a href="https://github.com/AtlasAnalyticsLab/PathoSynVLM/blob/main/docs/paper_pipeline.md">paper pipeline</a> for preparation, training, and evaluation.
           </p>
         </div>
       </section>
@@ -602,6 +614,7 @@ Conclusion: ...</code></pre>
           PathoSynVLM ·
           <a href="https://atlasanalyticslab.github.io/">Atlas Analytics Lab</a> ·
           <a href="https://github.com/AtlasAnalyticsLab/PathoSynVLM">Code</a> ·
+          <a href="https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM">Model</a> ·
           <a href="https://arxiv.org/abs/2605.30716">Paper</a> ·
           <a href="https://github.com/AtlasAnalyticsLab/PathoSynVLM/blob/main/LICENSE">CC BY-NC-SA 4.0</a>
         </p>

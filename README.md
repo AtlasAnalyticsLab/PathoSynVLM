@@ -7,6 +7,7 @@ This orphan `gh-pages` branch contains the project website for [PathoSynVLM](htt
 - Production URL: <https://atlasanalyticslab.github.io/PathoSynVLM/>
 - Paper: <https://arxiv.org/abs/2605.30716>
 - Research code: <https://github.com/AtlasAnalyticsLab/PathoSynVLM/tree/main>
+- Model weights: <https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM>
 - Maintainer guide: [DEVELOPMENT.md](DEVELOPMENT.md)
 
 The default `main` working tree contains no website files. A standard multi-branch clone may still fetch the `gh-pages` Git objects; use the single-branch command below when transfer-level isolation matters.
