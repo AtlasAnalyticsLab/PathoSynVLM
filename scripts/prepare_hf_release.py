@@ -85,8 +85,8 @@ def _model_card(
               type: image-text-to-text
               name: Case-level pathology synoptic report generation
             dataset:
-              name: HISTAI
-              type: HISTAI case-report pairs
+              name: HISTAI case-report pairs
+              type: HISTAI
             metrics:
             - type: rouge
               name: ROUGE-L
@@ -113,6 +113,8 @@ def _model_card(
 
         Code: [{github_url}]({github_url})
 
+        Model: [https://huggingface.co/{repo_id}](https://huggingface.co/{repo_id})
+
         ![PathoSynVLM architecture](assets/paper_architecture.png)
 
         ## What This Repository Contains
@@ -123,6 +125,7 @@ def _model_card(
         ```text
         README.md
         LICENSE
+        model_index.json
         config.json
         vlm_state.pt
         labels.json
@@ -130,6 +133,7 @@ def _model_card(
         llm/
         best_checkpoint_summary.json
         assets/
+        examples/
         ```
 
         The paper run used `unfreeze_llm_base=true`, so the release package
@@ -293,8 +297,8 @@ def _model_index(reported_results: dict[str, Any]) -> dict[str, Any]:
                     "name": "Case-level pathology synoptic report generation",
                 },
                 "dataset": {
-                    "name": "HISTAI",
-                    "type": "HISTAI case-report pairs",
+                    "name": "HISTAI case-report pairs",
+                    "type": "HISTAI",
                 },
                 "metrics": [
                     {"type": "rouge", "name": "ROUGE-L", "value": stage2.get("rougeL")},
@@ -372,7 +376,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Prepare the Hugging Face model repo root and upload notes.")
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--hf-repo-dir", type=Path, default=None, help="Directory used as the actual HF model repo root.")
-    parser.add_argument("--repo-id", type=str, required=True, help="Hugging Face model repo id, e.g. org/pathosynvlm-stage2-main.")
+    parser.add_argument("--repo-id", type=str, required=True, help="Hugging Face model repo id, e.g. AtlasAnalyticsLab/PathoSynVLM.")
     parser.add_argument("--github-url", type=str, required=True, help="Public GitHub repository URL.")
     parser.add_argument("--source-run-dir", type=Path, required=True, help="Completed Stage 2 training run used for metadata refresh.")
     parser.add_argument("--checkpoint-step", type=int, default=-1)
@@ -448,6 +452,8 @@ def main() -> None:
             *.bin filter=lfs diff=lfs merge=lfs -text
             *.pt filter=lfs diff=lfs merge=lfs -text
             *.pth filter=lfs diff=lfs merge=lfs -text
+            *.png filter=lfs diff=lfs merge=lfs -text
+            tokenizer/tokenizer.json filter=lfs diff=lfs merge=lfs -text
             """
         ),
         encoding="utf-8",
@@ -466,6 +472,7 @@ def main() -> None:
     manifest = {
         "staging_version": 1,
         "repo_id": str(args.repo_id),
+        "hub_url": f"https://huggingface.co/{args.repo_id}",
         "github_url": str(args.github_url),
         "hf_repo_dir": str(hf_repo_dir),
         "checkpoint_step": int(checkpoint_step),
@@ -546,14 +553,21 @@ llm/
 assets/
 ```
 
-## Upload after you provide the final repo id
+## Upload
 
 ```bash
-hf repos create {args.repo_id} --type model --private --exist-ok
+hf repos create {args.repo_id} --type model --exist-ok
 hf upload-large-folder {args.repo_id} {hf_repo_dir} --type model
 ```
 
 Upload only `{hf_repo_dir}`.
+
+Verify the published repository:
+
+```bash
+hf download {args.repo_id} --dry-run
+hf models info {args.repo_id}
+```
 """
     (output_dir / "UPLOAD_INSTRUCTIONS.md").write_text(upload_instructions, encoding="utf-8")
 

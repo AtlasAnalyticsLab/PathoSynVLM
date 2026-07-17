@@ -16,3 +16,9 @@ $PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main/
 ```
 
 Use `scripts/export_release_weights.py` only when creating this layout from a completed local training run. For normal use, download the released Hugging Face package directly.
+
+```bash
+source configs/paths.example.env
+hf download AtlasAnalyticsLab/PathoSynVLM \
+  --local-dir "$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main"
+```

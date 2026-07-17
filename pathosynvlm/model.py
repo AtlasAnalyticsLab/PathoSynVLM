@@ -94,7 +94,7 @@ class PathoSynVLM(nn.Module):
 
         model_kwargs: Dict[str, Any] = {}
         if torch_dtype is not None:
-            model_kwargs["dtype"] = torch_dtype
+            model_kwargs["torch_dtype"] = torch_dtype
         if attn_implementation is not None:
             model_kwargs["attn_implementation"] = attn_implementation
         if device_map is not None:

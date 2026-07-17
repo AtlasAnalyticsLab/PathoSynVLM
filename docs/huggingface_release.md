@@ -26,11 +26,11 @@ The paper Stage 2 run used `unfreeze_llm_base=true`, so `llm/` must contain the 
 Set the paths for your local release workspace:
 
 ```bash
-export PATHOSYNVLM_HF_REPO=AtlasAnalyticsLab/pathosynvlm-stage2-main
+export PATHOSYNVLM_HF_REPO=AtlasAnalyticsLab/PathoSynVLM
 export PATHOSYNVLM_GITHUB_URL=https://github.com/AtlasAnalyticsLab/PathoSynVLM
 export PATHOSYNVLM_RUNS_ROOT="${PATHOSYNVLM_RUNS_ROOT:-$PWD/runs}"
 export PATHOSYNVLM_STAGE2_RUN="$PATHOSYNVLM_RUNS_ROOT/stage2_main"
-export PATHOSYNVLM_HF_ROOT=release/huggingface/pathosynvlm-stage2-main
+export PATHOSYNVLM_HF_ROOT=release/huggingface/PathoSynVLM
 ```
 
 ## Refresh Metadata Without Re-exporting Weights
@@ -77,7 +77,7 @@ The symlink check should print `0`; upload only real files.
 
 ## Upload
 
-After the final Hugging Face repository id is chosen:
+Upload the prepared release root:
 
 ```bash
 hf repos create "$PATHOSYNVLM_HF_REPO" --type model --exist-ok
@@ -85,3 +85,10 @@ hf upload-large-folder "$PATHOSYNVLM_HF_REPO" "$PATHOSYNVLM_HF_ROOT" --type mode
 ```
 
 Use `hf upload-large-folder` because the merged LLM directory is large and resumable upload is safer.
+
+Verify the published file inventory and metadata after upload:
+
+```bash
+hf download "$PATHOSYNVLM_HF_REPO" --dry-run
+hf models info "$PATHOSYNVLM_HF_REPO"
+```

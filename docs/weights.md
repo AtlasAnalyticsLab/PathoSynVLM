@@ -5,7 +5,7 @@ PathoSynVLM has code in Git and model artifacts outside Git.
 The intended user experience is:
 
 1. The trained Stage 2 model is exported once into the inference layout below.
-2. The exported directory is hosted through Hugging Face, GitHub Releases, institutional storage, or another artifact host.
+2. The exported directory is hosted at [AtlasAnalyticsLab/PathoSynVLM](https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM).
 3. Users download the exported directory into `$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main/`.
 4. Users run inference or evaluation directly from those weights.
 
@@ -26,10 +26,10 @@ $PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main/
 
 `llm/` is a merged Hugging Face model directory for the paper release. This matters because the paper run used `unfreeze_llm_base=true`; a LoRA adapter alone is not sufficient for exact reruns unless the base updates are also included.
 
-After the final Hugging Face repo id is known, download the weights with:
+Download the official weights with:
 
 ```bash
-export PATHOSYNVLM_HF_REPO=AtlasAnalyticsLab/pathosynvlm-stage2-main
+export PATHOSYNVLM_HF_REPO=AtlasAnalyticsLab/PathoSynVLM
 source configs/paths.example.env
 
 hf download "$PATHOSYNVLM_HF_REPO" \

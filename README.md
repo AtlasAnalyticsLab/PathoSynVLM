@@ -4,7 +4,7 @@
 [![Project Page](https://img.shields.io/badge/Project-Page-0e8a9c.svg)](https://atlasanalyticslab.github.io/PathoSynVLM/)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776ab.svg)](https://www.python.org/)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey.svg)](LICENSE)
-[![Model weights](https://img.shields.io/badge/model_weights-Hugging_Face-blue.svg)](weights/README.md)
+[![Model weights](https://img.shields.io/badge/model_weights-Hugging_Face-blue.svg)](https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM)
 
 ![PathoSynVLM architecture from the paper](assets/paper_architecture.png)
 
@@ -26,8 +26,11 @@ Paper: https://arxiv.org/abs/2605.30716
 
 Project page: https://atlasanalyticslab.github.io/PathoSynVLM/
 
+Model weights: https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM
+
 ## News
 
+- **2026/07** PathoSynVLM model weights released on Hugging Face.
 - **2026/06** Repository prepared with paper-aligned training, evaluation, inference, and weight-export utilities.
 - **2026/05** PathoSynVLM preprint released on arXiv.
 
@@ -93,7 +96,7 @@ Download from Hugging Face:
 ```bash
 source configs/paths.example.env
 
-export PATHOSYNVLM_HF_REPO=AtlasAnalyticsLab/pathosynvlm-stage2-main
+export PATHOSYNVLM_HF_REPO=AtlasAnalyticsLab/PathoSynVLM
 hf download "$PATHOSYNVLM_HF_REPO" \
   --local-dir "$PATHOSYNVLM_WEIGHTS_ROOT/pathosynvlm-stage2-main"
 
@@ -131,6 +134,8 @@ There are two different weight workflows:
 | **Export weights** | Retrainers | Run `scripts/export_release_weights.py` on a completed Stage 2 training run to create the inference package. |
 
 The paper Stage 2 run used `unfreeze_llm_base=true`, so a LoRA adapter alone is not enough for exact release inference. The Hugging Face package contains a merged/full Hugging Face LLM directory plus `vlm_state.pt` for the aligner and WSI marker tensors.
+
+Official model repository: [AtlasAnalyticsLab/PathoSynVLM](https://huggingface.co/AtlasAnalyticsLab/PathoSynVLM).
 
 Export command for the authors:
 
